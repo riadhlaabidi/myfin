@@ -1,0 +1,52 @@
+package tn.riadh.myfin.repository.impl;
+
+import java.sql.PreparedStatement;
+import java.util.Optional;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+
+import tn.riadh.myfin.domain.ProductCategory;
+import tn.riadh.myfin.repository.ProductCategoryRepository;
+import tn.riadh.myfin.repository.mapper.ProductCategoryMapper;
+
+public class ProductCategoryJdbcRepository implements ProductCategoryRepository {
+
+    private JdbcTemplate jdbcTemplate;
+    private ProductCategoryMapper productCategoryMapper = new ProductCategoryMapper();
+
+    public ProductCategoryJdbcRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Override
+    public ProductCategory save(ProductCategory productCategory) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        PreparedStatementCreator psc = connection -> {
+            String sql = "INSERT INTO product_categories (name) VALUES (?)";
+            PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setString(1, productCategory.getName());
+            return ps;
+        };
+
+        jdbcTemplate.update(psc);
+        productCategory.setId(keyHolder.getKey().longValue());
+        return productCategory;
+    }
+
+    @Override
+    public Optional<ProductCategory> findById(Long id) {
+        String sql = "SELECT * FROM product_category WHERE id=?";
+        ProductCategory pc = jdbcTemplate.queryForObject(sql, productCategoryMapper);
+
+        if (pc != null) {
+            return Optional.of(pc);
+        }
+
+        return Optional.empty();
+    }
+
+}
