@@ -12,6 +12,15 @@ import tn.riadh.myfin.domain.Product;
 import tn.riadh.myfin.repository.ProductRepository;
 import tn.riadh.myfin.repository.mapper.ProductMapper;
 
+/**
+ * A JDBC-based implementation of {@link ProductRepository}.
+ *
+ * <p>
+ * Uses Spring's {@link JdbcTemplate} to persist and retrieve {@link Product}
+ * entities from a relational database. SQL statements are executed directly and
+ * results are mapped using {@link ProductMapper}.
+ * </p>
+ */
 public class ProductJdbcRepository implements ProductRepository {
 
     private JdbcTemplate jdbcTemplate;
@@ -50,5 +59,4 @@ public class ProductJdbcRepository implements ProductRepository {
 
         return Optional.empty();
     }
-
 }

@@ -5,24 +5,29 @@ import java.util.Optional;
 import tn.riadh.myfin.domain.ProductCategory;
 
 /**
- * Product category repository interface.
+ * Repository interface for performing persistence operations on
+ * {@link ProductCategory} entities.
+ * <p>
+ * Defines the contract for persisting and retrieving product categories.
+ * Implementations handle the actual data access logic.
+ * </p>
  */
 public interface ProductCategoryRepository {
 
     /**
-     * Saves a new or update a ProductCategory.
+     * Saves the given product category.
      * 
-     * @param productCategory The product category object to save
-     * @return The saved {@link ProductCategory} object
+     * @param productCategory the product category to persist
+     * @return the persisted product category
      */
-    public ProductCategory save(ProductCategory productCategory);
+    ProductCategory save(ProductCategory productCategory);
 
     /**
-     * Finds and returns an optional of a {@link ProductCategory} by its id.
+     * Finds a product category by its identifier.
      * 
-     * @param id The id of the product category to find
-     * @return a {@link ProductCategory} wrapped in an Optional
+     * @param id the product category identifier
+     * @return an {@code Optional} containing the product category if found,
+     *         otherwise empty
      */
-    public Optional<ProductCategory> findById(Long id);
-
+    Optional<ProductCategory> findById(Long id);
 }

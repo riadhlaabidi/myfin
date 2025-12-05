@@ -1,11 +1,23 @@
 package tn.riadh.myfin.domain;
 
+/**
+ * Represents a product entity.
+ * <p>
+ * Identity and equality behavior are inherited from {@link AbstractEntity}.
+ * </p>
+ */
 public class Product extends AbstractEntity {
 
     private String name;
     private String imageUrl;
     private ProductCategory category;
 
+    /**
+     * Creates an empty {@code Product} instance.
+     * <p>
+     * Required for frameworks that rely on a no-argument constructor.
+     * </p>
+     */
     public Product() {
     }
 
@@ -46,6 +58,5 @@ public class Product extends AbstractEntity {
                 ", imageUrl=" + imageUrl +
                 ", category" + category.getName() +
                 "}";
-
     }
 }

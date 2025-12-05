@@ -5,23 +5,28 @@ import tn.riadh.myfin.domain.Product;
 import java.util.Optional;
 
 /**
- * Product repository interface
+ * Repository interface for performing persistence operations on {@link Product}
+ * entities.
+ * <p>
+ * Defines the contract for saving products and retrieving them by identifier.
+ * Actual data access behavior is provided by the implementing class.
+ * </p>
  */
 public interface ProductRepository {
 
     /**
-     * Saves a new product to the database.
-     * 
-     * @param product The product object to save.
-     * @return The save object with id set.
+     * Saves the given product.
+     *
+     * @param product the product to persist
+     * @return the persisted product
      */
-    public Product save(Product product);
+    Product save(Product product);
 
     /**
-     * Finds and returns a product by its id, wrapped in an Optional object.
-     * 
-     * @param id The product id
-     * @return Optional of a product
+     * Finds a product by its identifier.
+     *
+     * @param id the product identifier
+     * @return an {@code Optional} containing the product if found, otherwise empty
      */
-    public Optional<Product> findById(Long id);
+    Optional<Product> findById(Long id);
 }

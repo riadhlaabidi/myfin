@@ -8,6 +8,14 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
+/**
+ * Maps rows of a SQL {@link ResultSet} to {@link Product} instances.
+ * <p>
+ * Used by JDBC-based repositories to convert database query results
+ * into fully populated {@link Product} objects. The associated
+ * {@link ProductCategory} is partially populated with its identifier.
+ * </p>
+ */
 public class ProductMapper implements RowMapper<Product> {
 
     @Override

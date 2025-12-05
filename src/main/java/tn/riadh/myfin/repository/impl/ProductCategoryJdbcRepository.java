@@ -12,6 +12,15 @@ import tn.riadh.myfin.domain.ProductCategory;
 import tn.riadh.myfin.repository.ProductCategoryRepository;
 import tn.riadh.myfin.repository.mapper.ProductCategoryMapper;
 
+/**
+ * JDBC-based implementation of {@link ProductCategoryRepository}.
+ * <p>
+ * Uses Spring's {@link JdbcTemplate} to persist and retrieve
+ * {@link ProductCategory} entities from a relational database.
+ * SQL statements are executed directly, and results are mapped
+ * using {@link ProductCategoryMapper} .
+ * </p>
+ */
 public class ProductCategoryJdbcRepository implements ProductCategoryRepository {
 
     private JdbcTemplate jdbcTemplate;
@@ -48,5 +57,4 @@ public class ProductCategoryJdbcRepository implements ProductCategoryRepository 
 
         return Optional.empty();
     }
-
 }
