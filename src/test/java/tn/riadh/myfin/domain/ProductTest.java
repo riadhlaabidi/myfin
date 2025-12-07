@@ -1,9 +1,6 @@
 package tn.riadh.myfin.domain;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import tn.riadh.myfin.util.EqualsHashCodeTestUtil;
@@ -15,14 +12,14 @@ public class ProductTest {
         EqualsHashCodeTestUtil.equalsAndHashCodeVerifier(Product.class);
         Product product1 = new Product();
         Product product2 = new Product();
-        assertNull(product1.getId());
-        assertNull(product2.getId());
+        assertThat(product1.getId()).isNull();
+        assertThat(product2.getId()).isNull();
         product1.setId(1L);
         product2.setId(product1.getId());
-        assertEquals(product1, product2);
+        assertThat(product1).isEqualTo(product2);
         product2.setId(2L);
-        assertNotEquals(product1, product2);
+        assertThat(product1).isNotEqualTo(product2);
         product1.setId(null);
-        assertNotEquals(product1, product2);
+        assertThat(product1).isNotEqualTo(product2);
     }
 }
