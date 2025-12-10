@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: MyFin
+  # datasource:
+  #   driver-class-name: org.postgresql.Driver
+  liquibase:
+    contexts: test
