@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 
 import tn.riadh.myfin.util.EqualsHashCodeTestUtil;
 
-public class IventoryTest {
+public class InventoryItemTest {
 
     @Test
     public void equalsTest() throws Exception {
-        EqualsHashCodeTestUtil.equalsAndHashCodeVerifier(Inventory.class);
-        Inventory inventory1 = new Inventory();
-        Inventory inventory2 = new Inventory();
+        EqualsHashCodeTestUtil.equalsAndHashCodeVerifier(InventoryItem.class);
+        InventoryItem inventory1 = new InventoryItem();
+        InventoryItem inventory2 = new InventoryItem();
         assertThat(inventory1.getId()).isNull();
         assertThat(inventory2.getId()).isNull();
         inventory1.setId(1L);

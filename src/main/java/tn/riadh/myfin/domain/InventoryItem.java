@@ -1,14 +1,14 @@
 package tn.riadh.myfin.domain;
 
 /**
- * Represents an inventory record for a specific product.
+ * Represents an inventory item for a specific product.
  * <p>
- * Each inventory entry tracks a {@link Product} and the number of units
- * currently available. Identity behavior is inherited from
+ * Each inventory item tracks a {@link Product} and the number of units
+ * currently available in the inventory. Identity behavior is inherited from
  * {@link AbstractEntity}.
  * </p>
  */
-public class Inventory extends AbstractEntity {
+public class InventoryItem extends AbstractEntity {
 
     private Product product;
     private int units;
@@ -19,10 +19,10 @@ public class Inventory extends AbstractEntity {
      * Intended for frameworks that require a no-argument constructor.
      * </p>
      */
-    public Inventory() {
+    public InventoryItem() {
     }
 
-    public Inventory(Product product, int units) {
+    public InventoryItem(Product product, int units) {
         this.product = product;
         this.units = units;
     }
@@ -45,7 +45,7 @@ public class Inventory extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "Inventory{id=" + getId() +
+        return "InventoryItem{id=" + getId() +
                 ", product=" + product.getId() +
                 ", units" + units +
                 "}";
