@@ -56,4 +56,18 @@ public class ProductCategoryJdbcRepository implements ProductCategoryRepository 
         }
         return Optional.of(categories.getFirst());
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM product_categories WHERE id = ?)";
+        Boolean exists = jdbcTemplate.queryForObject(sql, Boolean.class, id);
+        return exists != null ? exists : false;
+    }
+
+    @Override
+    public long count() {
+        String sql = "SELECT COUNT(*) FROM product_categories";
+        Long countResult = jdbcTemplate.queryForObject(sql, Long.class);
+        return countResult != null ? countResult : 0;
+    }
 }

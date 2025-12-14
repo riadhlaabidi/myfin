@@ -30,4 +30,19 @@ public interface ProductCategoryRepository {
      *         otherwise empty
      */
     Optional<ProductCategory> findById(Long id);
+
+    /**
+     * Checks if a product category exists by its identifier.
+     * 
+     * @param id the product category identifier
+     * @return {@code true} if the product category exists, otherwise {@code false}
+     */
+    boolean existsById(Long id);
+
+    /**
+     * Counts the number of product categories in the database
+     * 
+     * @return the number of product categories
+     */
+    long count();
 }
