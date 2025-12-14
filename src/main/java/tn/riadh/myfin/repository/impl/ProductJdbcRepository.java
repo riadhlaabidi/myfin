@@ -36,11 +36,12 @@ public class ProductJdbcRepository implements ProductRepository {
     public Product save(Product product) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         PreparedStatementCreator psc = (connection) -> {
-            String sql = "INSERT INTO products(name, image_url, category_id) VALUES(?, ?, ?)";
+            String sql = "INSERT INTO products(name, barcode, image_url, category_id) VALUES(?, ?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
             ps.setString(1, product.getName());
-            ps.setString(2, product.getImageUrl());
-            ps.setLong(3, product.getCategory().getId());
+            ps.setString(2, product.getBarcode());
+            ps.setString(3, product.getImageUrl());
+            ps.setLong(4, product.getCategory().getId());
             return ps;
         };
         jdbcTemplate.update(psc, keyHolder);
@@ -56,5 +57,29 @@ public class ProductJdbcRepository implements ProductRepository {
             return Optional.empty();
         }
         return Optional.of(products.getFirst());
+    }
+
+    @Override
+    public Optional<Product> findByBarcode(String barcode) {
+        String sql = "SELECT * FROM products WHERE barcode = ?";
+        List<Product> products = jdbcTemplate.query(sql, productMapper, barcode);
+        if (products.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(products.getFirst());
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM products WHERE id = ?)";
+        Boolean exists = jdbcTemplate.queryForObject(sql, Boolean.class, id);
+        return exists != null ? exists : false;
+    }
+
+    @Override
+    public long count() {
+        String sql = "SELECT COUNT(*) FROM products";
+        Long countResult = jdbcTemplate.queryForObject(sql, Long.class);
+        return countResult != null ? countResult : 0;
     }
 }

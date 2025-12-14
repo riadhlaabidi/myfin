@@ -29,4 +29,27 @@ public interface ProductRepository {
      * @return an {@code Optional} containing the product if found, otherwise empty
      */
     Optional<Product> findById(Long id);
+
+    /**
+     * Finds a product by its barcode.
+     * 
+     * @param barcode the product's barcode
+     * @return an {@link Optional} containing the product if found, empty otherwise
+     */
+    Optional<Product> findByBarcode(String barcode);
+
+    /**
+     * Checks if a product exists by its identifier.
+     * 
+     * @param id the product identifier
+     * @return {@code true} if the product exists, otherwise {@code false}
+     */
+    boolean existsById(Long id);
+
+    /**
+     * Counts the number of products in the database
+     * 
+     * @return the number of products
+     */
+    long count();
 }

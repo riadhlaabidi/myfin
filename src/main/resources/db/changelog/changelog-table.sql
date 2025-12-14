@@ -9,11 +9,12 @@ CREATE TABLE product_categories (
 CREATE TABLE products (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    barcode TEXT UNIQUE NOT NULL,
     image_url VARCHAR(255) NOT NULL,
     category_id BIGINT NOT NULL
 );
 
-CREATE TABLE inventory (
+CREATE TABLE inventory_items (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     product_id BIGINT NOT NULL UNIQUE,
     units BIGINT NOT NULL

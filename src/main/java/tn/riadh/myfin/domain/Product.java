@@ -9,6 +9,7 @@ package tn.riadh.myfin.domain;
 public class Product extends AbstractEntity {
 
     private String name;
+    private String barcode;
     private String imageUrl;
     private ProductCategory category;
 
@@ -21,8 +22,9 @@ public class Product extends AbstractEntity {
     public Product() {
     }
 
-    public Product(String name, String imageUrl, ProductCategory category) {
+    public Product(String name, String barcode, String imageUrl, ProductCategory category) {
         this.name = name;
+        this.barcode = barcode;
         this.imageUrl = imageUrl;
         this.category = category;
     }
@@ -33,6 +35,14 @@ public class Product extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
     }
 
     public String getImageUrl() {
@@ -54,7 +64,8 @@ public class Product extends AbstractEntity {
     @Override
     public String toString() {
         return "Product{id=" + getId() +
-                ", name=" + getName() +
+                ", name=" + name +
+                ", barcode" + barcode +
                 ", imageUrl=" + imageUrl +
                 ", category" + category.getName() +
                 "}";
