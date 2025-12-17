@@ -63,11 +63,11 @@ public class Product extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "Product{id=" + getId() +
-                ", name=" + name +
-                ", barcode" + barcode +
-                ", imageUrl=" + imageUrl +
-                ", category" + category.getName() +
-                "}";
+        return "Product{id=" + getId()
+                + ", name=" + name
+                + ", barcode=" + barcode
+                + ", imageUrl=" + imageUrl
+                + ", category=" + category.getName()
+                + "}";
     }
 }

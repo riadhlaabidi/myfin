@@ -12,24 +12,7 @@ import tn.riadh.myfin.domain.InventoryItem;
  * Actual data access behavior is provided by the implementing class.
  * </p>
  */
-public interface InventoryItemRepository {
-
-    /**
-     * Saves an inventory item.
-     * 
-     * @param iventoryItem the inventory item to persist
-     * @return the persisted inventory item
-     */
-    InventoryItem save(InventoryItem inventoryItem);
-
-    /**
-     * Finds an iventory item by its identifier.
-     * 
-     * @param id the inventory item identifier
-     * @return an {@link Optional} containing the inventory item if found,
-     *         otherwise empty
-     */
-    Optional<InventoryItem> findById(Long id);
+public interface InventoryItemRepository extends CrudRepository<InventoryItem, Long> {
 
     /**
      * Finds an iventory item by its product identifier.
@@ -39,19 +22,4 @@ public interface InventoryItemRepository {
      *         otherwise empty
      */
     Optional<InventoryItem> findByProductId(Long productId);
-
-    /**
-     * Checks if an iventory item exists by its identifier.
-     * 
-     * @param id the inventory item identifier
-     * @return {@code true} if the inventory item exists, otherwise {@code false}
-     */
-    boolean existsById(Long id);
-
-    /**
-     * Counts the number of inventory items in the database.
-     * 
-     * @return the number of inventory items
-     */
-    long count();
 }
