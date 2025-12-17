@@ -21,4 +21,12 @@ CREATE TABLE inventory_items (
     product_id BIGINT NOT NULL UNIQUE,
     units BIGINT NOT NULL
 );
-
+ 
+--changeset riadh:20251217214413-table-create-suppliers
+CREATE TABLE suppliers (
+    id BIGINT PRIMARY KEY DEFAULT nextval('sequence_generator'),
+    name VARCHAR(100) NOT NULL,
+    address VARCHAR(200) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    tin VARCHAR(20)
+);
