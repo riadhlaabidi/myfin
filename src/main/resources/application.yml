@@ -2,5 +2,5 @@ spring:
   application:
     name: MyFin
   profiles:
-    active: dev
+    active: dev,jdbc
 

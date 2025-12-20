@@ -1,5 +1,7 @@
 spring:
   application:
     name: MyFin
+  profiles:
+    active: jdbc
   liquibase:
     contexts: test

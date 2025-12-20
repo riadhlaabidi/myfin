@@ -30,3 +30,21 @@ CREATE TABLE suppliers (
     phone_number VARCHAR(15) NOT NULL,
     tin VARCHAR(20)
 );
+
+--changeset riadh:20251218113623-table-create-supplies
+CREATE TABLE supplies (
+    id BIGINT PRIMARY KEY DEFAULT nextval('sequence_generator'),
+    supplier_id BIGINT NOT NULL,
+    invoice_number VARCHAR(50),
+    supply_date TIMESTAMP WITH TIME ZONE NOT NULL,
+    total DECIMAL NOT NULL
+);
+
+--changeset riadh:20251218115406-table-create-supply-items
+CREATE TABLE supply_items (
+    id BIGINT PRIMARY KEY DEFAULT nextval('sequence_generator'),
+    supply_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    units BIGINT NOT NULL,
+    subtotal DECIMAL NOT NULL
+);
