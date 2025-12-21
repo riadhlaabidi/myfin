@@ -1,23 +1,25 @@
-package tn.riadh.myfin.domain.inventory.repository;
+package tn.riadh.myfin.infrastructure.persistence.jdbc.inventory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import tn.riadh.myfin.AbstractIntegrationTest;
 import tn.riadh.myfin.domain.inventory.InventoryItem;
+import tn.riadh.myfin.domain.inventory.repository.InventoryItemRepository;
 import tn.riadh.myfin.domain.product.Product;
 
-public class InventoryItemRepositoryIT extends AbstractIntegrationTest {
+@Profile("jdbc")
+public class InventoryItemJdbcRepositoryIT extends AbstractIntegrationTest {
 
     private static final long SAVED_PRODUCT_ID = 1L;
-
-    @Autowired
-    private InventoryItemRepository inventoryItemRepository;
 
     static InventoryItem createInventoryItem() {
         return new InventoryItem()
@@ -25,15 +27,21 @@ public class InventoryItemRepositoryIT extends AbstractIntegrationTest {
                 .withUnits(1);
     }
 
+    @Autowired
+    private InventoryItemRepository inventoryItemRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @Test
     @Transactional
     public void shouldAddInventoryItemWhenSavedToDatabase() {
-        long countBeforeInsert = inventoryItemRepository.count();
+        long countBefore = countRowsInTable(jdbcTemplate, "inventory_items");
         InventoryItem inventoryItem = createInventoryItem();
         InventoryItem saved = inventoryItemRepository.save(inventoryItem);
         assertThat(saved.getId()).isNotNull();
-        long countAfterInsert = inventoryItemRepository.count();
-        assertThat(countAfterInsert).isEqualTo(countBeforeInsert + 1);
+        long countAfter = countRowsInTable(jdbcTemplate, "inventory_items");
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
 
     @Test
@@ -66,15 +74,5 @@ public class InventoryItemRepositoryIT extends AbstractIntegrationTest {
     public void shouldNotReturnInventoryItemWhenProductIdDoesNotExist() {
         Optional<InventoryItem> found = inventoryItemRepository.findByProductId(99999L);
         assertThat(found.isEmpty()).isTrue();
-    }
-
-    @Test
-    @Transactional
-    public void shouldReturnCorrectCount() {
-        long countBeforeInsert = inventoryItemRepository.count();
-        InventoryItem inventoryItem = createInventoryItem();
-        inventoryItemRepository.save(inventoryItem);
-        long countAfterInsert = inventoryItemRepository.count();
-        assertThat(countAfterInsert).isEqualTo(countBeforeInsert + 1);
     }
 }

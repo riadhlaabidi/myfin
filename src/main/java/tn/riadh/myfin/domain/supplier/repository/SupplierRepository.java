@@ -39,11 +39,4 @@ public interface SupplierRepository {
      * 
      */
     boolean existsById(Long id);
-
-    /**
-     * Counts the number of {@link Supplier} in the data store.
-     * 
-     * @return the number of {@link Supplier}
-     */
-    long count();
 }

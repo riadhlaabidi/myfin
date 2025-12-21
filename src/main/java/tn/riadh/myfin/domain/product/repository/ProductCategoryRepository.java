@@ -40,11 +40,4 @@ public interface ProductCategoryRepository {
      * 
      */
     boolean existsById(Long id);
-
-    /**
-     * Counts the number of {@link ProductCategory} in the data store.
-     * 
-     * @return the number of {@link ProductCategory}
-     */
-    long count();
 }

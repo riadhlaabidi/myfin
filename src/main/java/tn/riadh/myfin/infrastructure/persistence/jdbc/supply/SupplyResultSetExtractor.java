@@ -28,7 +28,6 @@ public class SupplyResultSetExtractor implements ResultSetExtractor<Supply> {
 
             SupplyItem item = new SupplyItem()
                     .id(rs.getLong("supply_item_id"))
-                    .withSupply(supply)
                     .withProduct(new Product().id(rs.getLong("product_id")))
                     .withUnits(rs.getInt("units"))
                     .withSubtotal(rs.getDouble("subtotal"));

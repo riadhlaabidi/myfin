@@ -1,24 +1,26 @@
-package tn.riadh.myfin.domain.product.repository;
+package tn.riadh.myfin.infrastructure.persistence.jdbc.product;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import tn.riadh.myfin.AbstractIntegrationTest;
 import tn.riadh.myfin.domain.product.Product;
 import tn.riadh.myfin.domain.product.ProductCategory;
+import tn.riadh.myfin.domain.product.repository.ProductRepository;
 
-public class ProductRepositoryIT extends AbstractIntegrationTest {
+@Profile("jdbc")
+public class ProductJdbcRepositoryIT extends AbstractIntegrationTest {
 
     private static final long SAVED_CATEGORY_ID = 1L;
-
-    @Autowired
-    private ProductRepository productRepository;
 
     static Product createProduct() {
         return new Product()
@@ -28,15 +30,21 @@ public class ProductRepositoryIT extends AbstractIntegrationTest {
                 .withCategory(new ProductCategory().id(SAVED_CATEGORY_ID));
     }
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private ProductRepository productRepository;
+
     @Test
     @Transactional
     public void shouldAddProductWhenSavedToDatabase() {
         Product product = createProduct();
-        long countBeforeInsert = productRepository.count();
+        long countBefore = countRowsInTable(jdbcTemplate, "products");
         Product saved = productRepository.save(product);
         assertThat(saved.getId()).isNotNull();
-        long countAfterInsert = productRepository.count();
-        assertThat(countAfterInsert).isEqualTo(countBeforeInsert + 1);
+        long countAfter = countRowsInTable(jdbcTemplate, "products");
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
 
     @Test
@@ -84,14 +92,5 @@ public class ProductRepositoryIT extends AbstractIntegrationTest {
     @Test
     public void shouldReturnFalseWhenIdDoesNotExist() {
         assertThat(productRepository.existsById(99999L)).isFalse();
-    }
-
-    @Test
-    @Transactional
-    public void shouldReturnCorrectCount() {
-        long countBeforeInsert = productRepository.count();
-        productRepository.save(createProduct());
-        long countAfterInsert = productRepository.count();
-        assertThat(countAfterInsert).isEqualTo(countBeforeInsert + 1);
     }
 }

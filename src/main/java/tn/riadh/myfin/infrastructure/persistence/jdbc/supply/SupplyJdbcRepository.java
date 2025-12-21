@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import tn.riadh.myfin.domain.supply.Supply;
+import tn.riadh.myfin.domain.supply.SupplyItem;
 import tn.riadh.myfin.domain.supply.repository.SupplyRepository;
 
 @Repository
@@ -39,7 +40,9 @@ public class SupplyJdbcRepository implements SupplyRepository {
             return ps;
         };
         jdbcTemplate.update(psc, keyHolder);
-        supply.setId(keyHolder.getKey().longValue());
+        Long supplyId = keyHolder.getKey().longValue();
+        supply.setId(supplyId);
+        insertSupplyItems(supplyId, supply.getSupplyItems());
         return supply;
     }
 
@@ -84,10 +87,16 @@ public class SupplyJdbcRepository implements SupplyRepository {
         return exists != null ? exists : false;
     }
 
-    @Override
-    public long count() {
-        String sql = "SELECT COUNT(*) FROM supplies";
-        Long countResult = jdbcTemplate.queryForObject(sql, Long.class);
-        return countResult != null ? countResult : 0;
+    private void insertSupplyItems(Long supplyId, List<SupplyItem> items) {
+        String sql = """
+                INSERT INTO supply_items (supply_id, product_id, units, subtotal)
+                VALUES (?, ?, ?, ?) """;
+
+        jdbcTemplate.batchUpdate(sql, items, items.size(), (ps, item) -> {
+            ps.setLong(1, supplyId);
+            ps.setLong(2, item.getProduct().getId());
+            ps.setInt(3, item.getUnits());
+            ps.setDouble(4, item.getSubtotal());
+        });
     }
 }

@@ -62,11 +62,4 @@ public class ProductCategoryJdbcRepository implements ProductCategoryRepository 
         Boolean exists = jdbcTemplate.queryForObject(sql, Boolean.class, id);
         return exists != null ? exists : false;
     }
-
-    @Override
-    public long count() {
-        String sql = "SELECT COUNT(*) FROM product_categories";
-        Long countResult = jdbcTemplate.queryForObject(sql, Long.class);
-        return countResult != null ? countResult : 0;
-    }
 }

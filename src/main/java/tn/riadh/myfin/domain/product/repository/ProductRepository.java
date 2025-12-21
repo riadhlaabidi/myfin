@@ -47,11 +47,4 @@ public interface ProductRepository {
      * 
      */
     boolean existsById(Long id);
-
-    /**
-     * Counts the number of {@link Product} in the data store.
-     * 
-     * @return the number of {@link Product}
-     */
-    long count();
 }

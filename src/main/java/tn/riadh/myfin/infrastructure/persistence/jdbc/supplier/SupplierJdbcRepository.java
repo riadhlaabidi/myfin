@@ -58,11 +58,4 @@ public class SupplierJdbcRepository implements SupplierRepository {
         Boolean exists = jdbcTemplate.queryForObject(sql, Boolean.class, id);
         return exists != null ? exists : false;
     }
-
-    @Override
-    public long count() {
-        String sql = "SELECT COUNT(*) FROM suppliers";
-        Long countResult = jdbcTemplate.queryForObject(sql, Long.class);
-        return countResult != null ? countResult : 0;
-    }
 }

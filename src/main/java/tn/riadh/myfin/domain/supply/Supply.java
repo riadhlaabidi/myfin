@@ -76,6 +76,9 @@ public class Supply extends AbstractEntity {
     }
 
     public List<SupplyItem> getSupplyItems() {
+        if (this.supplyItems == null) {
+            this.supplyItems = new ArrayList<>();
+        }
         return Collections.unmodifiableList(supplyItems);
     }
 

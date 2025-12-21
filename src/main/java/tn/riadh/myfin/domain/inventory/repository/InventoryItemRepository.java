@@ -48,11 +48,4 @@ public interface InventoryItemRepository {
      *         {@code false}
      */
     boolean existsById(Long id);
-
-    /**
-     * Counts the number of {@link InventoryItem} in the data store.
-     * 
-     * @return the number of {@link InventoryItem}
-     */
-    long count();
 }

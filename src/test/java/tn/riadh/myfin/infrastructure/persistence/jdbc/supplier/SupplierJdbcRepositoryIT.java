@@ -1,20 +1,22 @@
-package tn.riadh.myfin.domain.supplier.repository;
+package tn.riadh.myfin.infrastructure.persistence.jdbc.supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import tn.riadh.myfin.AbstractIntegrationTest;
 import tn.riadh.myfin.domain.supplier.Supplier;
+import tn.riadh.myfin.domain.supplier.repository.SupplierRepository;
 
-public class SupplierRepositoryIT extends AbstractIntegrationTest {
-
-    @Autowired
-    private SupplierRepository supplierRepository;
+@Profile("jdbc")
+public class SupplierJdbcRepositoryIT extends AbstractIntegrationTest {
 
     static Supplier createSupplier() {
         return new Supplier()
@@ -24,15 +26,21 @@ public class SupplierRepositoryIT extends AbstractIntegrationTest {
                 .withTin("0099/0099/0099");
     }
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private SupplierRepository supplierRepository;
+
     @Test
     @Transactional
     public void shouldAddSupplierWhenSavedToDatabase() {
         Supplier supplier = createSupplier();
-        long countBeforeInsert = supplierRepository.count();
+        long countBefore = countRowsInTable(jdbcTemplate, "suppliers");
         Supplier saved = supplierRepository.save(supplier);
         assertThat(saved.getId()).isNotNull();
-        long countAfterInsert = supplierRepository.count();
-        assertThat(countAfterInsert).isEqualTo(countBeforeInsert + 1);
+        long countAfter = countRowsInTable(jdbcTemplate, "suppliers");
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
 
     @Test
@@ -62,14 +70,5 @@ public class SupplierRepositoryIT extends AbstractIntegrationTest {
     @Test
     public void shouldReturnFalseWhenIdDoesNotExist() {
         assertThat(supplierRepository.existsById(99999L)).isFalse();
-    }
-
-    @Test
-    @Transactional
-    public void shouldReturnCorrectCount() {
-        long countBeforeInsert = supplierRepository.count();
-        supplierRepository.save(createSupplier());
-        long countAfterInsert = supplierRepository.count();
-        assertThat(countAfterInsert).isEqualTo(countBeforeInsert + 1);
     }
 }
