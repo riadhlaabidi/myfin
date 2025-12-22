@@ -8,6 +8,3 @@ databaseChangeLog:
   - include:
       file: db/data/data-dev.sql
       relativeToChangelogFile: false
-  - include:
-      file: db/data/data-test.sql
-      relativeToChangelogFile: false
