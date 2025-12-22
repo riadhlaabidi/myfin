@@ -15,26 +15,22 @@ import tn.riadh.myfin.AbstractIntegrationTest;
 import tn.riadh.myfin.domain.inventory.InventoryItem;
 import tn.riadh.myfin.domain.inventory.repository.InventoryItemRepository;
 import tn.riadh.myfin.domain.product.Product;
+import tn.riadh.myfin.support.JdbcTestData;
 
 @Profile("jdbc")
+@Transactional
 public class InventoryItemJdbcRepositoryIT extends AbstractIntegrationTest {
 
-    private static final long SAVED_PRODUCT_ID = 1L;
-
-    static InventoryItem createInventoryItem() {
-        return new InventoryItem()
-                .withProduct(new Product().id(SAVED_PRODUCT_ID))
-                .withUnits(1);
-    }
-
     @Autowired
-    private InventoryItemRepository inventoryItemRepository;
+    private JdbcTestData jdbcTestData;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private InventoryItemRepository inventoryItemRepository;
+
     @Test
-    @Transactional
     public void shouldAddInventoryItemWhenSavedToDatabase() {
         long countBefore = countRowsInTable(jdbcTemplate, "inventory_items");
         InventoryItem inventoryItem = createInventoryItem();
@@ -45,13 +41,14 @@ public class InventoryItemJdbcRepositoryIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void shouldReturnInventoryItemWhenIdExists() {
         InventoryItem inventoryItem = createInventoryItem();
         Long id = inventoryItemRepository.save(inventoryItem).getId();
         Optional<InventoryItem> found = inventoryItemRepository.findById(id);
         assertThat(found.isPresent()).isTrue();
         assertThat(found.get().getId()).isEqualTo(id);
+        assertThat(found.get().getProduct().getId()).isEqualTo(inventoryItem.getProduct().getId());
+        assertThat(found.get().getUnits()).isEqualTo(inventoryItem.getUnits());
     }
 
     @Test
@@ -61,18 +58,25 @@ public class InventoryItemJdbcRepositoryIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void shouldReturnInvetoryItemWhenProductIdExists() {
         InventoryItem inventoryItem = createInventoryItem();
         inventoryItemRepository.save(inventoryItem);
-        Optional<InventoryItem> found = inventoryItemRepository.findByProductId(SAVED_PRODUCT_ID);
+        Optional<InventoryItem> found = inventoryItemRepository.findByProductId(inventoryItem.getProduct().getId());
         assertThat(found.isPresent()).isTrue();
-        assertThat(found.get().getProduct().getId()).isEqualTo(SAVED_PRODUCT_ID);
+        assertThat(found.get().getProduct().getId()).isEqualTo(inventoryItem.getProduct().getId());
     }
 
     @Test
     public void shouldNotReturnInventoryItemWhenProductIdDoesNotExist() {
         Optional<InventoryItem> found = inventoryItemRepository.findByProductId(99999L);
         assertThat(found.isEmpty()).isTrue();
+    }
+
+    private InventoryItem createInventoryItem() {
+        Long categoryId = jdbcTestData.productCategory();
+        Long productId = jdbcTestData.product(categoryId);
+        return new InventoryItem()
+                .withProduct(new Product().id(productId))
+                .withUnits(1);
     }
 }

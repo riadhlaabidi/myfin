@@ -16,15 +16,8 @@ import tn.riadh.myfin.domain.supplier.Supplier;
 import tn.riadh.myfin.domain.supplier.repository.SupplierRepository;
 
 @Profile("jdbc")
+@Transactional
 public class SupplierJdbcRepositoryIT extends AbstractIntegrationTest {
-
-    static Supplier createSupplier() {
-        return new Supplier()
-                .withName("supplier")
-                .withAddress("address")
-                .withPhoneNumber("999999999")
-                .withTin("0099/0099/0099");
-    }
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -33,7 +26,6 @@ public class SupplierJdbcRepositoryIT extends AbstractIntegrationTest {
     private SupplierRepository supplierRepository;
 
     @Test
-    @Transactional
     public void shouldAddSupplierWhenSavedToDatabase() {
         Supplier supplier = createSupplier();
         long countBefore = countRowsInTable(jdbcTemplate, "suppliers");
@@ -44,13 +36,16 @@ public class SupplierJdbcRepositoryIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void shouldReturnSupplierWhenIdExists() {
         Supplier supplier = createSupplier();
         Long id = supplierRepository.save(supplier).getId();
         Optional<Supplier> found = supplierRepository.findById(id);
         assertThat(found.isPresent()).isTrue();
         assertThat(found.get().getId()).isEqualTo(id);
+        assertThat(found.get().getName()).isEqualTo(supplier.getName());
+        assertThat(found.get().getAddress()).isEqualTo(supplier.getAddress());
+        assertThat(found.get().getPhoneNumber()).isEqualTo(supplier.getPhoneNumber());
+        assertThat(found.get().getTin()).isEqualTo(supplier.getTin());
     }
 
     @Test
@@ -60,7 +55,6 @@ public class SupplierJdbcRepositoryIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void shouldReturnTrueWhenIdExists() {
         Supplier supplier = createSupplier();
         Long id = supplierRepository.save(supplier).getId();
@@ -70,5 +64,13 @@ public class SupplierJdbcRepositoryIT extends AbstractIntegrationTest {
     @Test
     public void shouldReturnFalseWhenIdDoesNotExist() {
         assertThat(supplierRepository.existsById(99999L)).isFalse();
+    }
+
+    private Supplier createSupplier() {
+        return new Supplier()
+                .withName("supplier")
+                .withAddress("address")
+                .withPhoneNumber("999999999")
+                .withTin("0099/0099/0099");
     }
 }

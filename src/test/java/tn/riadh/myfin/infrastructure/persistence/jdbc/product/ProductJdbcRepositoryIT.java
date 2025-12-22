@@ -1,6 +1,7 @@
 package tn.riadh.myfin.infrastructure.persistence.jdbc.product;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,19 +18,14 @@ import tn.riadh.myfin.AbstractIntegrationTest;
 import tn.riadh.myfin.domain.product.Product;
 import tn.riadh.myfin.domain.product.ProductCategory;
 import tn.riadh.myfin.domain.product.repository.ProductRepository;
+import tn.riadh.myfin.support.JdbcTestData;
 
 @Profile("jdbc")
+@Transactional
 public class ProductJdbcRepositoryIT extends AbstractIntegrationTest {
 
-    private static final long SAVED_CATEGORY_ID = 1L;
-
-    static Product createProduct() {
-        return new Product()
-                .withName("product")
-                .withBarcode(UUID.randomUUID().toString())
-                .withImageUrl("image")
-                .withCategory(new ProductCategory().id(SAVED_CATEGORY_ID));
-    }
+    @Autowired
+    private JdbcTestData jdbcTestData;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -37,7 +34,6 @@ public class ProductJdbcRepositoryIT extends AbstractIntegrationTest {
     private ProductRepository productRepository;
 
     @Test
-    @Transactional
     public void shouldAddProductWhenSavedToDatabase() {
         Product product = createProduct();
         long countBefore = countRowsInTable(jdbcTemplate, "products");
@@ -48,7 +44,6 @@ public class ProductJdbcRepositoryIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void shouldReturnProductWhenIdExists() {
         Product product = createProduct();
         Long id = productRepository.save(product).getId();
@@ -64,7 +59,6 @@ public class ProductJdbcRepositoryIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void shouldReturnProductWhenBarcodeExists() {
         Product product = createProduct();
         String barcode = product.getBarcode();
@@ -75,14 +69,21 @@ public class ProductJdbcRepositoryIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
+    public void shouldThrowExceptionWhenAddingProductWithAlreadyExistantBarcode() {
+        Product product = createProduct();
+        productRepository.save(product);
+        assertThatThrownBy(() -> productRepository.save(product))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessageContaining("unique");
+    }
+
+    @Test
     public void shouldNotReturnProductWhenBarcodeDoesNotExist() {
         Optional<Product> found = productRepository.findByBarcode(UUID.randomUUID().toString());
         assertThat(found.isEmpty()).isTrue();
     }
 
     @Test
-    @Transactional
     public void shouldReturnTrueWhenIdExists() {
         Product p = createProduct();
         Long id = productRepository.save(p).getId();
@@ -92,5 +93,14 @@ public class ProductJdbcRepositoryIT extends AbstractIntegrationTest {
     @Test
     public void shouldReturnFalseWhenIdDoesNotExist() {
         assertThat(productRepository.existsById(99999L)).isFalse();
+    }
+
+    private Product createProduct() {
+        Long categoryId = jdbcTestData.productCategory();
+        return new Product()
+                .withName("product")
+                .withBarcode(UUID.randomUUID().toString())
+                .withImageUrl("image")
+                .withCategory(new ProductCategory().id(categoryId));
     }
 }

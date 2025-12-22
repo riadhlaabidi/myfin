@@ -5,7 +5,6 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,39 +21,14 @@ import tn.riadh.myfin.domain.supplier.Supplier;
 import tn.riadh.myfin.domain.supply.Supply;
 import tn.riadh.myfin.domain.supply.SupplyItem;
 import tn.riadh.myfin.domain.supply.repository.SupplyRepository;
+import tn.riadh.myfin.support.JdbcTestData;
 
 @Profile("jdbc")
+@Transactional
 public class SupplyJdbcRepositoryIT extends AbstractIntegrationTest {
 
-    private static final Long SAVED_SUPPLIER_ID = 1L;
-
-    static Supply createSupply() {
-        return new Supply()
-                .withSupplier(new Supplier().id(SAVED_SUPPLIER_ID))
-                .withInvoiceNumber("999999")
-                .withSupplyDate(Instant.now())
-                .withSupplyItems(new ArrayList<>())
-                .withTotal(455.00);
-    }
-
-    static Supply createSupplyWithItems() {
-        Supply supply = new Supply()
-                .withSupplier(new Supplier().id(SAVED_SUPPLIER_ID))
-                .withInvoiceNumber("999999")
-                .withSupplyDate(Instant.now().truncatedTo(ChronoUnit.MICROS))
-                .withTotal(455.00);
-        SupplyItem item1 = new SupplyItem()
-                .withProduct(new Product().id(1L))
-                .withUnits(4)
-                .withSubtotal(100);
-        SupplyItem item2 = new SupplyItem()
-                .withProduct(new Product().id(2L))
-                .withUnits(4)
-                .withSubtotal(200);
-        supply.addSupplyItem(item1);
-        supply.addSupplyItem(item2);
-        return supply;
-    }
+    @Autowired
+    private JdbcTestData jdbcTestData;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -63,8 +37,7 @@ public class SupplyJdbcRepositoryIT extends AbstractIntegrationTest {
     private SupplyRepository supplyRepository;
 
     @Test
-    @Transactional
-    public void shouldAddSupplyWhenSavedToDatabase() {
+    public void shouldAddSupplyWithItemsWhenSavedToDatabase() {
         Supply supply = createSupplyWithItems();
         List<SupplyItem> items = supply.getSupplyItems();
         int itemsSize = items.size();
@@ -82,8 +55,15 @@ public class SupplyJdbcRepositoryIT extends AbstractIntegrationTest {
         assertThat(supplyCountAfter).isEqualTo(supplyCountBefore + 1);
         assertThat(supplyItemsCountAfter).isEqualTo(supplyItemsCountBefore + itemsSize);
         assertThat(supplyItemsCount).isEqualTo(itemsSize);
+    }
 
-        Optional<Supply> found = supplyRepository.findByIdWithSupplyItems(supplyId);
+    @Test
+    public void shouldRetrieveSupplyWithItemsFromDatabase() {
+        Supply supply = createSupplyWithItems();
+        int itemsSize = supply.getSupplyItems().size();
+        Long supplyId = supplyRepository.save(supply).getId();
+
+        Optional<Supply> found = supplyRepository.findByIdWithSupplyItems(supply.getId());
         assertThat(found.isPresent()).isTrue();
         Supply s = found.get();
         assertThat(s.getSupplier().getId()).isEqualTo(supply.getSupplier().getId());
@@ -93,17 +73,30 @@ public class SupplyJdbcRepositoryIT extends AbstractIntegrationTest {
 
         List<SupplyItem> retrievedItems = s.getSupplyItems();
         assertThat(retrievedItems).hasSize(itemsSize);
-        for (int i = 0; i < itemsSize; i++) {
-            assertThat(retrievedItems.get(i).getId()).isNotNull();
-            assertThat(retrievedItems.get(i).getSupply().getId()).isEqualTo(supplyId);
-            assertThat(retrievedItems.get(i).getProduct().getId()).isEqualTo(items.get(i).getProduct().getId());
-            assertThat(retrievedItems.get(i).getUnits()).isEqualTo(items.get(i).getUnits());
-            assertThat(retrievedItems.get(i).getSubtotal()).isEqualTo(items.get(i).getSubtotal());
-        }
+        assertThat(retrievedItems).extracting(item -> item.getId()).doesNotContainNull();
+        assertThat(retrievedItems).extracting(item -> item.getSupply().getId())
+                .allSatisfy(si -> assertThat(si).isEqualTo(supplyId));
+
+        List<Integer> expectedUnits = supply.getSupplyItems().stream().map(SupplyItem::getUnits).toList();
+        assertThat(retrievedItems)
+                .extracting(SupplyItem::getUnits)
+                .containsExactlyInAnyOrderElementsOf(expectedUnits);
+
+        List<Double> expectedSubtotals = supply.getSupplyItems().stream().map(SupplyItem::getSubtotal).toList();
+        assertThat(retrievedItems)
+                .extracting(SupplyItem::getSubtotal)
+                .containsExactlyInAnyOrderElementsOf(expectedSubtotals);
+
+        List<Long> expectedProductIds = supply.getSupplyItems()
+                .stream()
+                .map(item -> item.getProduct().getId())
+                .toList();
+        assertThat(retrievedItems)
+                .extracting(item -> item.getProduct().getId())
+                .containsExactlyInAnyOrderElementsOf(expectedProductIds);
     }
 
     @Test
-    @Transactional
     public void shouldReturnSupplyWhenIdExists() {
         Supply supply = createSupply();
         Long id = supplyRepository.save(supply).getId();
@@ -113,7 +106,6 @@ public class SupplyJdbcRepositoryIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void shouldReturnSupplyWithSupplyItemsWhenIdExists() {
         Supply supply = createSupplyWithItems();
         int itemsSize = supply.getSupplyItems().size();
@@ -136,7 +128,6 @@ public class SupplyJdbcRepositoryIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void shouldReturnTrueWhenIdExists() {
         Supply supply = createSupply();
         Long id = supplyRepository.save(supply).getId();
@@ -146,5 +137,36 @@ public class SupplyJdbcRepositoryIT extends AbstractIntegrationTest {
     @Test
     public void shouldReturnFalseWhenIdDoesNotExist() {
         assertThat(supplyRepository.existsById(99999L)).isFalse();
+    }
+
+    private Supply createSupply() {
+        Long supplierId = jdbcTestData.supplier();
+        return new Supply()
+                .withSupplier(new Supplier().id(supplierId))
+                .withInvoiceNumber("99999999")
+                .withSupplyDate(Instant.parse("2025-12-22T15:13:00Z"))
+                .withSupplyItems(new ArrayList<>())
+                .withTotal(455.00);
+    }
+
+    private Supply createSupplyWithItems() {
+        Supply supply = createSupply();
+
+        Long categoryId = jdbcTestData.productCategory();
+        Long product1Id = jdbcTestData.product(categoryId);
+        Long product2Id = jdbcTestData.product(categoryId);
+
+        SupplyItem item1 = new SupplyItem()
+                .withProduct(new Product().id(product1Id))
+                .withUnits(4)
+                .withSubtotal(100);
+        SupplyItem item2 = new SupplyItem()
+                .withProduct(new Product().id(product2Id))
+                .withUnits(4)
+                .withSubtotal(200);
+
+        supply.addSupplyItem(item1);
+        supply.addSupplyItem(item2);
+        return supply;
     }
 }

@@ -16,11 +16,8 @@ import tn.riadh.myfin.domain.product.ProductCategory;
 import tn.riadh.myfin.domain.product.repository.ProductCategoryRepository;
 
 @Profile("jdbc")
+@Transactional
 public class ProductCategoryJdbcRepositoryIT extends AbstractIntegrationTest {
-
-    static ProductCategory createProductCategory() {
-        return new ProductCategory().withName("category");
-    }
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -29,7 +26,6 @@ public class ProductCategoryJdbcRepositoryIT extends AbstractIntegrationTest {
     private ProductCategoryRepository productCategoryRepository;
 
     @Test
-    @Transactional
     public void shouldAddProductCategoryWhenSavedToDatabase() {
         ProductCategory pc = createProductCategory();
         long countBefore = countRowsInTable(jdbcTemplate, "product_categories");
@@ -40,7 +36,6 @@ public class ProductCategoryJdbcRepositoryIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void shouldReturnProductCategoryWhenIdExists() {
         ProductCategory pc = createProductCategory();
         Long id = productCategoryRepository.save(pc).getId();
@@ -56,7 +51,6 @@ public class ProductCategoryJdbcRepositoryIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void shouldReturnTrueWhenIdExists() {
         ProductCategory productCategory = createProductCategory();
         ProductCategory saved = productCategoryRepository.save(productCategory);
@@ -68,5 +62,9 @@ public class ProductCategoryJdbcRepositoryIT extends AbstractIntegrationTest {
     public void shouldReturnFalseWhenIdDoesNotExist() {
         boolean found = productCategoryRepository.existsById(99999L);
         assertThat(found).isFalse();
+    }
+
+    private ProductCategory createProductCategory() {
+        return new ProductCategory().withName("category");
     }
 }
