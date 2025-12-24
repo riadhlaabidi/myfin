@@ -3,6 +3,7 @@ package tn.riadh.myfin.domain.common;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
+import java.util.Objects;
 
 public class MonetaryAmount {
 
@@ -37,13 +38,36 @@ public class MonetaryAmount {
         return new MonetaryAmount(this.amount.multiply(factor), currency);
     }
 
-    public MonetaryAmount divide(BigDecimal divisor) {
-        return new MonetaryAmount(this.amount.divide(amount), currency);
-    }
-
     private void requireSameCurrency(MonetaryAmount other) {
         if (!this.currency.equals(other.currency)) {
             throw new IllegalArgumentException("Currency mismatch");
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(amount, currency);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        MonetaryAmount other = (MonetaryAmount) obj;
+        if (amount == null) {
+            if (other.amount != null)
+                return false;
+        } else if (!amount.equals(other.amount))
+            return false;
+        if (currency == null) {
+            if (other.currency != null)
+                return false;
+        } else if (!currency.equals(other.currency))
+            return false;
+        return true;
     }
 }
