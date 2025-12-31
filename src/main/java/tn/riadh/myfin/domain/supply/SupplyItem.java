@@ -1,6 +1,7 @@
 package tn.riadh.myfin.domain.supply;
 
 import tn.riadh.myfin.domain.common.AbstractEntity;
+import tn.riadh.myfin.domain.common.MonetaryAmount;
 import tn.riadh.myfin.domain.product.Product;
 
 /**
@@ -16,7 +17,7 @@ public class SupplyItem extends AbstractEntity {
     private Supply supply;
     private Product product;
     private int units;
-    private double subtotal;
+    private MonetaryAmount subtotal;
 
     /**
      * Creates an empty {@code SupplyItem} instance.
@@ -71,15 +72,15 @@ public class SupplyItem extends AbstractEntity {
         return this;
     }
 
-    public double getSubtotal() {
+    public MonetaryAmount getSubtotal() {
         return subtotal;
     }
 
-    public void setSubtotal(double subtotal) {
+    public void setSubtotal(MonetaryAmount subtotal) {
         this.subtotal = subtotal;
     }
 
-    public SupplyItem withSubtotal(double subtotal) {
+    public SupplyItem withSubtotal(MonetaryAmount subtotal) {
         this.setSubtotal(subtotal);
         return this;
     }

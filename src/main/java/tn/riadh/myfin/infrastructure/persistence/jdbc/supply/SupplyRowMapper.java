@@ -5,10 +5,14 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
+import tn.riadh.myfin.application.monetary.MonetaryFactory;
 import tn.riadh.myfin.domain.supplier.Supplier;
 import tn.riadh.myfin.domain.supply.Supply;
 
 public class SupplyRowMapper implements RowMapper<Supply> {
+
+    private final MonetaryFactory monetaryFactory = new MonetaryFactory();
+
     @Override
     public Supply mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Supply()
@@ -16,6 +20,6 @@ public class SupplyRowMapper implements RowMapper<Supply> {
                 .withSupplier(new Supplier().id(rs.getLong("supplier_id")))
                 .withInvoiceNumber(rs.getString("invoice_number"))
                 .withSupplyDate(rs.getTimestamp("supply_date").toInstant())
-                .withTotal(rs.getDouble("total"));
+                .withTotal(monetaryFactory.amount(rs.getBigDecimal("total")));
     }
 }

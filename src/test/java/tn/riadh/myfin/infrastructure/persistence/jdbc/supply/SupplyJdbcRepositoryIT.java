@@ -4,11 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -16,11 +19,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import tn.riadh.myfin.AbstractIntegrationTest;
+import tn.riadh.myfin.application.monetary.MonetaryFactory;
+import tn.riadh.myfin.domain.common.MonetaryAmount;
 import tn.riadh.myfin.domain.product.Product;
 import tn.riadh.myfin.domain.supplier.Supplier;
 import tn.riadh.myfin.domain.supply.Supply;
 import tn.riadh.myfin.domain.supply.SupplyItem;
 import tn.riadh.myfin.domain.supply.repository.SupplyRepository;
+import tn.riadh.myfin.infrastructure.context.MonetaryContext;
 import tn.riadh.myfin.support.JdbcTestData;
 
 @Profile("jdbc")
@@ -35,6 +41,14 @@ public class SupplyJdbcRepositoryIT extends AbstractIntegrationTest {
 
     @Autowired
     private SupplyRepository supplyRepository;
+
+    @Autowired
+    private MonetaryFactory monetaryFactory;
+
+    @BeforeAll
+    static void setUp() {
+        MonetaryContext.setCurrency(Currency.getInstance("TND"));
+    }
 
     @Test
     public void shouldAddSupplyWithItemsWhenSavedToDatabase() {
@@ -82,7 +96,7 @@ public class SupplyJdbcRepositoryIT extends AbstractIntegrationTest {
                 .extracting(SupplyItem::getUnits)
                 .containsExactlyInAnyOrderElementsOf(expectedUnits);
 
-        List<Double> expectedSubtotals = supply.getSupplyItems().stream().map(SupplyItem::getSubtotal).toList();
+        List<MonetaryAmount> expectedSubtotals = supply.getSupplyItems().stream().map(SupplyItem::getSubtotal).toList();
         assertThat(retrievedItems)
                 .extracting(SupplyItem::getSubtotal)
                 .containsExactlyInAnyOrderElementsOf(expectedSubtotals);
@@ -146,7 +160,7 @@ public class SupplyJdbcRepositoryIT extends AbstractIntegrationTest {
                 .withInvoiceNumber("99999999")
                 .withSupplyDate(Instant.parse("2025-12-22T15:13:00Z"))
                 .withSupplyItems(new ArrayList<>())
-                .withTotal(455.00);
+                .withTotal(monetaryFactory.amount(new BigDecimal("455.33")));
     }
 
     private Supply createSupplyWithItems() {
@@ -159,11 +173,11 @@ public class SupplyJdbcRepositoryIT extends AbstractIntegrationTest {
         SupplyItem item1 = new SupplyItem()
                 .withProduct(new Product().id(product1Id))
                 .withUnits(4)
-                .withSubtotal(100);
+                .withSubtotal(monetaryFactory.amount(new BigDecimal("123.821")));
         SupplyItem item2 = new SupplyItem()
                 .withProduct(new Product().id(product2Id))
                 .withUnits(4)
-                .withSubtotal(200);
+                .withSubtotal(monetaryFactory.amount(new BigDecimal("100.887")));
 
         supply.addSupplyItem(item1);
         supply.addSupplyItem(item2);

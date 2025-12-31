@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import tn.riadh.myfin.domain.common.AbstractEntity;
+import tn.riadh.myfin.domain.common.MonetaryAmount;
 import tn.riadh.myfin.domain.supplier.Supplier;
 
 /**
@@ -20,7 +21,7 @@ public class Supply extends AbstractEntity {
     private String invoiceNumber;
     private Instant supplyDate;
     private List<SupplyItem> supplyItems;
-    private double total;
+    private MonetaryAmount total;
 
     /**
      * Creates an empty {@code Supply} instance.
@@ -99,15 +100,15 @@ public class Supply extends AbstractEntity {
         return this;
     }
 
-    public double getTotal() {
+    public MonetaryAmount getTotal() {
         return total;
     }
 
-    public void setTotal(double total) {
+    public void setTotal(MonetaryAmount total) {
         this.total = total;
     }
 
-    public Supply withTotal(double total) {
+    public Supply withTotal(MonetaryAmount total) {
         this.setTotal(total);
         return this;
     }

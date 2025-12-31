@@ -47,8 +47,8 @@ public class AbstractEntity {
      */
     @Override
     public int hashCode() {
-        if (getId() != null) {
-            return getId().hashCode();
+        if (id != null) {
+            return id.hashCode();
         }
         return getClass().hashCode();
     }

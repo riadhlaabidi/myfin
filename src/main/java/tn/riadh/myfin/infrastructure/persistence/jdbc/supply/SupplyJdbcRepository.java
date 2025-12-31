@@ -36,7 +36,7 @@ public class SupplyJdbcRepository implements SupplyRepository {
             ps.setLong(1, supply.getSupplier().getId());
             ps.setString(2, supply.getInvoiceNumber());
             ps.setTimestamp(3, Timestamp.from(supply.getSupplyDate()));
-            ps.setDouble(4, supply.getTotal());
+            ps.setBigDecimal(4, supply.getTotal().amount());
             return ps;
         };
         jdbcTemplate.update(psc, keyHolder);
@@ -96,7 +96,7 @@ public class SupplyJdbcRepository implements SupplyRepository {
             ps.setLong(1, supplyId);
             ps.setLong(2, item.getProduct().getId());
             ps.setInt(3, item.getUnits());
-            ps.setDouble(4, item.getSubtotal());
+            ps.setBigDecimal(4, item.getSubtotal().amount());
         });
     }
 }
