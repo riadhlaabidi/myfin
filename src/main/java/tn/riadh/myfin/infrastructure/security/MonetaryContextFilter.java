@@ -1,4 +1,4 @@
-package tn.riadh.myfin.infrastructure.web.filter;
+package tn.riadh.myfin.infrastructure.security;
 
 import java.io.IOException;
 import java.util.Currency;
@@ -10,8 +10,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import tn.riadh.myfin.infrastructure.context.MonetaryContext;
-import tn.riadh.myfin.infrastructure.security.StoreResolver;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class MonetaryContextFilter extends OncePerRequestFilter {
 
     private final StoreResolver storeResolver;
