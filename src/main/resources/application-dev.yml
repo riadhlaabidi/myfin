@@ -3,6 +3,6 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/myfin
     username: riadh
-    password: riadh
+    password: 
   liquibase:
     contexts: dev

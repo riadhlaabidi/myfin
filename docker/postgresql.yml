@@ -1,0 +1,12 @@
+services:
+  myfin-db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: myfin
+      POSTGRES_USER: riadh
+      POSTGRES_PASSWORD: 
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+     - 127.0.0.1:5432:5432
+
+
