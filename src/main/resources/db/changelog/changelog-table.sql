@@ -48,3 +48,47 @@ CREATE TABLE supply_items (
     units BIGINT NOT NULL,
     subtotal DECIMAL NOT NULL
 );
+
+--changeset riadh:20260113175033-table-create-users
+CREATE TABLE users (
+    id BIGINT PRIMARY KEY DEFAULT nextval('sequence_generator'),
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    lang_key VARCHAR(10) NOT NULL,
+    image_url VARCHAR(256),
+    activated BOOLEAN NOT NULL,
+    activation_key VARCHAR(20),
+    reset_key VARCHAR(20),
+    reset_date TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE
+);
+
+--changeset riadh:20260113190155-table-create-authorities
+CREATE TABLE authorities (
+    name VARCHAR(50) PRIMARY KEY 
+);
+
+--changeset riadh:20260113190352-table-create-user-authorities
+CREATE TABLE user_authorities (
+    user_id BIGINT NOT NULL,
+    authority_name VARCHAR(50) NOT NULL,
+    PRIMARY KEY(user_id, authority_name)
+);
+
+--changeset riadh:20260113191304-table-create-stores
+CREATE TABLE stores (
+    id BIGINT PRIMARY KEY DEFAULT nextval('sequence_generator'),
+    name VARCHAR(100) NOT NULL,
+    tin VARCHAR(20),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    owner_id BIGINT NOT NULL
+);
+
+--changeset riadh:20260113191324-table-create-store-employees
+CREATE TABLE store_employees (
+    user_id BIGINT NOT NULL,
+    store_id BIGINT NOT NULL,
+    PRIMARY KEY(user_id, store_id)
+);
