@@ -38,6 +38,10 @@ public class MonetaryAmount {
         return new MonetaryAmount(this.amount.multiply(factor), currency);
     }
 
+    public MonetaryAmount multiply(int factor) {
+        return this.multiply(new BigDecimal(factor));
+    }
+
     private void requireSameCurrency(MonetaryAmount other) {
         if (!this.currency.equals(other.currency)) {
             throw new IllegalArgumentException("Currency mismatch");
