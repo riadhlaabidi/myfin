@@ -8,7 +8,8 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>4.0.1</version>
-    <relativePath /> <!-- lookup parent from repository -->
+    <relativePath />
+    <!-- lookup parent from repository -->
   </parent>
 
   <groupId>tn.riadh</groupId>
@@ -19,6 +20,7 @@
   <name>myfin</name>
   <description>Point of Sale System for retail businesses</description>
   <url>https://github.com/riadhlaabidi/myfin</url>
+
   <developers>
     <developer>
       <id>riadh</id>
@@ -27,8 +29,8 @@
   </developers>
 
   <modules>
-    <module>myfin-shared</module>
     <module>myfin-server</module>
+    <module>myfin-core</module>
   </modules>
 
   <properties>
@@ -40,11 +42,10 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- Internal modules -->
       <dependency>
         <groupId>tn.riadh</groupId>
-        <artifactId>myfin-shared</artifactId>
-        <version>${project.version}</version>
+        <artifactId>myfin-core</artifactId>
+        <version>{project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -91,5 +92,4 @@
       </plugins>
     </pluginManagement>
   </build>
-
 </project>

@@ -5,25 +5,25 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>myfin</artifactId>
     <groupId>tn.riadh</groupId>
+    <artifactId>myfin</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>myfin-shared</artifactId>
+  <artifactId>myfin-core</artifactId>
   <packaging>jar</packaging>
 
   <dependencies>
-    <!-- Validation api for DTO's -->
     <dependency>
-      <groupId>jakarta.validation</groupId>
-      <artifactId>jakarta.validation-api</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
     </dependency>
-
-    <!-- Jackson for JSON serialization -->
+    <!-- Optionally: parameterized tests support -->
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

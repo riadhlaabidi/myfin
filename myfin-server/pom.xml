@@ -15,10 +15,7 @@
 
 	<dependencies>
 		<!-- Internal dependencies -->
-		<dependency>
-			<groupId>tn.riadh</groupId>
-			<artifactId>myfin-shared</artifactId>
-		</dependency>
+
 
 		<!-- Spring Boot starters -->
 		<dependency>
