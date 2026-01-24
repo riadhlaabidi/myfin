@@ -1,6 +1,7 @@
 package tn.riadh.myfin.core.sale.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import tn.riadh.myfin.core.operator.domain.OperatorId;
@@ -18,13 +19,22 @@ import tn.riadh.myfin.core.terminal.domain.TerminalId;
  */
 public final class Sale {
     private final SaleId id;
+    private SaleStatus status;
     private final StoreId storeId;
     private final TerminalId terminalId;
     private final OperatorId operatorId;
-    private SaleStatus status;
     private final List<SaleLine> lines;
 
     private Sale(StoreId storeId, TerminalId terminalId, OperatorId operatorId) {
+        if (storeId == null) {
+            throw new IllegalArgumentException("StoreId cannot be null");
+        }
+        if (terminalId == null) {
+            throw new IllegalArgumentException("TerminalId cannot be null");
+        }
+        if (operatorId == null) {
+            throw new IllegalArgumentException("OperatorId cannot be null");
+        }
         this.id = SaleId.generate();
         this.status = SaleStatus.OPEN;
         this.storeId = storeId;
@@ -57,4 +67,37 @@ public final class Sale {
         return status;
     }
 
+    public List<SaleLine> lines() {
+        return Collections.unmodifiableList(lines);
+    }
+
+    public void addLine(SaleLine saleLine) {
+        lines.add(saleLine);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Sale)) {
+            return false;
+        }
+        Sale other = (Sale) obj;
+        return id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Sale{id=" + id
+                + ", status=" + status.displayName()
+                + ", storeId=" + storeId
+                + ", terminalId=" + terminalId
+                + ", operatorId=" + operatorId;
+    }
 }

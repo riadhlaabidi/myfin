@@ -35,12 +35,12 @@ public final class MonetaryAmount {
     }
 
     public MonetaryAmount add(MonetaryAmount augend) {
-        requireSameCurrency(augend);
+        ensureSameCurrency(augend);
         return new MonetaryAmount(this.amount.add(augend.amount), this.currency);
     }
 
     public MonetaryAmount subtract(MonetaryAmount subtrahend) {
-        requireSameCurrency(subtrahend);
+        ensureSameCurrency(subtrahend);
         return new MonetaryAmount(this.amount.subtract(subtrahend.amount), currency);
     }
 
@@ -52,7 +52,7 @@ public final class MonetaryAmount {
         return this.multiply(new BigDecimal(factor));
     }
 
-    private void requireSameCurrency(MonetaryAmount other) {
+    private void ensureSameCurrency(MonetaryAmount other) {
         if (!this.currency.equals(other.currency)) {
             throw new IllegalArgumentException("Currency mismatch");
         }
