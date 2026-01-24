@@ -1,5 +1,8 @@
 package tn.riadh.myfin.core.sale.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import tn.riadh.myfin.core.operator.domain.OperatorId;
 import tn.riadh.myfin.core.store.domain.StoreId;
 import tn.riadh.myfin.core.terminal.domain.TerminalId;
@@ -19,6 +22,7 @@ public final class Sale {
     private final TerminalId terminalId;
     private final OperatorId operatorId;
     private SaleStatus status;
+    private final List<SaleLine> lines;
 
     private Sale(StoreId storeId, TerminalId terminalId, OperatorId operatorId) {
         this.id = SaleId.generate();
@@ -26,6 +30,7 @@ public final class Sale {
         this.storeId = storeId;
         this.terminalId = terminalId;
         this.operatorId = operatorId;
+        this.lines = new ArrayList<>();
     }
 
     public static Sale create(StoreId storeId, TerminalId terminalId, OperatorId operatorId) {
@@ -51,4 +56,5 @@ public final class Sale {
     public SaleStatus status() {
         return status;
     }
+
 }

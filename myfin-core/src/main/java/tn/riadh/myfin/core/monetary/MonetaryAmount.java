@@ -1,16 +1,22 @@
-package tn.riadh.myfin.domain.common;
+package tn.riadh.myfin.core.monetary;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
 import java.util.Objects;
 
-public class MonetaryAmount {
+public final class MonetaryAmount {
 
-    private BigDecimal amount;
-    private Currency currency;
+    private final BigDecimal amount;
+    private final Currency currency;
 
-    public MonetaryAmount(BigDecimal amount, Currency currency) {
+    private MonetaryAmount(final BigDecimal amount, final Currency currency) {
+        if (amount == null) {
+            throw new IllegalArgumentException("Monetary amount cannot be null");
+        }
+        if (currency == null) {
+            throw new IllegalArgumentException("Monetary currency cannot be null");
+        }
         int scale = currency.getDefaultFractionDigits();
         this.amount = amount.setScale(scale, RoundingMode.HALF_UP);
         this.currency = currency;
@@ -22,6 +28,10 @@ public class MonetaryAmount {
 
     public Currency currency() {
         return this.currency;
+    }
+
+    public static MonetaryAmount of(BigDecimal amount, Currency currency) {
+        return new MonetaryAmount(amount, currency);
     }
 
     public MonetaryAmount add(MonetaryAmount augend) {
@@ -55,24 +65,14 @@ public class MonetaryAmount {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (!(obj instanceof MonetaryAmount)) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        }
         MonetaryAmount other = (MonetaryAmount) obj;
-        if (amount == null) {
-            if (other.amount != null)
-                return false;
-        } else if (!amount.equals(other.amount))
-            return false;
-        if (currency == null) {
-            if (other.currency != null)
-                return false;
-        } else if (!currency.equals(other.currency))
-            return false;
-        return true;
+        return amount.equals(other.amount) && currency.equals(other.currency);
     }
 
     @Override
