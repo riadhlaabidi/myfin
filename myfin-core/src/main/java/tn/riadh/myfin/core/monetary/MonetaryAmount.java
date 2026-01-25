@@ -53,8 +53,8 @@ public final class MonetaryAmount {
     }
 
     private void ensureSameCurrency(MonetaryAmount other) {
-        if (!this.currency.equals(other.currency)) {
-            throw new IllegalArgumentException("Currency mismatch");
+        if (!currency.equals(other.currency)) {
+            throw CurrencyMismatchException.of(currency, other.currency);
         }
     }
 

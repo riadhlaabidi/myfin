@@ -10,25 +10,53 @@ import org.junit.jupiter.api.Test;
 
 public class MonetaryAmountTests {
 
+    private static final Currency USD = Currency.getInstance("USD");
+    private static final Currency TND = Currency.getInstance("TND");
+    private static final MonetaryAmount HUNDRED_USD = MonetaryAmount.of(new BigDecimal("100.00"), USD);
+    private static final MonetaryAmount THIRTEEN_USD = MonetaryAmount.of(new BigDecimal("13.00"), USD);
+    private static final MonetaryAmount FIFTY_TND = MonetaryAmount.of(new BigDecimal("50.000"), TND);
+    private static final MonetaryAmount EIGHTY_SIX_TND = MonetaryAmount.of(new BigDecimal("96.000"), TND);
+
     @Test
-    public void creatingMonetaryAmountWithNullAmountShouldThrowAnException() {
+    public void creatingWithNullAmountShouldThrowAnException() {
         assertThrowsExactly(IllegalArgumentException.class,
-                () -> MonetaryAmount.of(null, Currency.getInstance("USD")));
+                () -> MonetaryAmount.of(null, USD));
     }
 
     @Test
-    public void creatingMonetaryAmountWithNullCurrencyShouldThrowAnException() {
+    public void creatingWithNullCurrencyShouldThrowAnException() {
         assertThrowsExactly(IllegalArgumentException.class,
                 () -> MonetaryAmount.of(new BigDecimal("12.4"), null));
     }
 
     @Test
-    public void addingMonetaryAmountsWithDifferentCurrenciesShouldThrowAnException() {
-        MonetaryAmount a = MonetaryAmount.of(new BigDecimal("100.14"), Currency.getInstance("USD"));
-        MonetaryAmount b = MonetaryAmount.of(new BigDecimal("130.14"), Currency.getInstance("TND"));
+    public void addingWithDifferentCurrenciesShouldThrowAnException() {
+        assertThrowsExactly(CurrencyMismatchException.class, () -> HUNDRED_USD.add(FIFTY_TND));
+    }
 
-        assertThrowsExactly(IllegalArgumentException.class, () -> a.add(b));
-        assertTrue(new BigDecimal("100.14").equals(a.amount()));
-        assertTrue("USD".equals(a.currency().getCurrencyCode()));
+    @Test
+    public void addingShouldReturnValidResult() {
+        MonetaryAmount result = HUNDRED_USD.add(THIRTEEN_USD);
+        assertTrue(new BigDecimal("113.00").equals(result.amount()));
+        assertTrue(USD.equals(result.currency()));
+    }
+
+    @Test
+    public void subtractingWithDifferentCurrenciesShouldThrowAnException() {
+        assertThrowsExactly(CurrencyMismatchException.class, () -> FIFTY_TND.subtract(HUNDRED_USD));
+    }
+
+    @Test
+    public void subtractingShouldReturnValidResult() {
+        MonetaryAmount result = HUNDRED_USD.subtract(THIRTEEN_USD);
+        assertTrue(new BigDecimal("87.00").equals(result.amount()));
+        assertTrue(USD.equals(result.currency()));
+    }
+
+    @Test
+    public void multiplyingShouldReturnValidResult() {
+        MonetaryAmount result = EIGHTY_SIX_TND.multiply(5);
+        assertTrue(new BigDecimal("480.000").equals(result.amount()));
+        assertTrue(TND.equals(result.currency()));
     }
 }
