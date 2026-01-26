@@ -1,4 +1,4 @@
-package tn.riadh.myfin.core.product.domain;
+package tn.riadh.myfin.product.domain;
 
 import java.util.UUID;
 

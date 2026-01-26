@@ -36,6 +36,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>25</java.version>
+    <spring-modulith.version>2.0.2</spring-modulith.version>
     <maven.compiler.release>25</maven.compiler.release>
     <maven.compiler.target>25</maven.compiler.target>
   </properties>
@@ -46,6 +47,14 @@
         <groupId>tn.riadh</groupId>
         <artifactId>myfin-core</artifactId>
         <version>{project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.modulith</groupId>
+        <artifactId>spring-modulith-bom</artifactId>
+        <version>${spring-modulith.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

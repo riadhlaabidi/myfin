@@ -1,4 +1,4 @@
-package tn.riadh.myfin.core.sale.domain;
+package tn.riadh.myfin.sale;
 
 import java.util.ArrayList;
 import java.util.Collections;
