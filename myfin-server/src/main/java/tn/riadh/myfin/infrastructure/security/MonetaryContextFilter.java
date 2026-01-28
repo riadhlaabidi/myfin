@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class MonetaryContextFilter extends OncePerRequestFilter {
 
-    private final StoreResolver storeResolver;
+    // private final StoreResolver storeResolver;
 
-    public MonetaryContextFilter(StoreResolver storeResolver) {
-        this.storeResolver = storeResolver;
+    public MonetaryContextFilter() {
+        // this.storeResolver = storeResolver;
     }
 
     @Override

@@ -30,7 +30,6 @@
 
   <modules>
     <module>myfin-server</module>
-    <module>myfin-core</module>
   </modules>
 
   <properties>
@@ -43,12 +42,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>tn.riadh</groupId>
-        <artifactId>myfin-core</artifactId>
-        <version>{project.version}</version>
-      </dependency>
-
       <dependency>
         <groupId>org.springframework.modulith</groupId>
         <artifactId>spring-modulith-bom</artifactId>

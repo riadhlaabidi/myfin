@@ -10,10 +10,10 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 @Configuration
 public class SecurityConfig {
 
-    private final StoreResolver storeResolver;
+    // private final StoreResolver storeResolver;
 
-    public SecurityConfig(StoreResolver storeResolver) {
-        this.storeResolver = storeResolver;
+    public SecurityConfig() {
+        // this.storeResolver = storeResolver;
     }
 
     // Add the monetary context filter after the last authentication filter, since
@@ -21,7 +21,7 @@ public class SecurityConfig {
     // and the correct currency before performing monetary operations.
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.addFilterAfter(new MonetaryContextFilter(storeResolver), AnonymousAuthenticationFilter.class);
+        http.addFilterAfter(null, AnonymousAuthenticationFilter.class);
         return http.build();
     }
 
