@@ -1,14 +1,14 @@
-package tn.riadh.myfin.core.store.domain;
+package tn.riadh.myfin.sale.domain;
 
 import java.util.UUID;
 
-public final class StoreId {
+public class OperatorId {
 
     private final UUID value;
 
-    private StoreId(UUID value) {
+    private OperatorId(UUID value) {
         if (value == null) {
-            throw new IllegalArgumentException("StoreId cannot be null");
+            throw new IllegalArgumentException("OperatorId cannot be null");
         }
         this.value = value;
     }
@@ -17,8 +17,8 @@ public final class StoreId {
         return value;
     }
 
-    public static StoreId generate() {
-        return new StoreId(UUID.randomUUID());
+    public static OperatorId generate() {
+        return new OperatorId(UUID.randomUUID());
     }
 
     @Override
@@ -26,10 +26,10 @@ public final class StoreId {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof StoreId)) {
+        if (!(obj instanceof OperatorId)) {
             return false;
         }
-        StoreId other = (StoreId) obj;
+        OperatorId other = (OperatorId) obj;
         return value.equals(other.value);
     }
 

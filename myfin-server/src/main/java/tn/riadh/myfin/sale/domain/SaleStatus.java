@@ -1,4 +1,4 @@
-package tn.riadh.myfin.sale;
+package tn.riadh.myfin.sale.domain;
 
 enum SaleStatus {
     OPEN("Open"),

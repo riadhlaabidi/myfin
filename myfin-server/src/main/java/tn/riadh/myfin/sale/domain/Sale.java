@@ -1,12 +1,8 @@
-package tn.riadh.myfin.sale;
+package tn.riadh.myfin.sale.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import tn.riadh.myfin.core.operator.domain.OperatorId;
-import tn.riadh.myfin.core.store.domain.StoreId;
-import tn.riadh.myfin.core.terminal.domain.TerminalId;
 
 /**
  * Aggregate root representing a retail sale.

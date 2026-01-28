@@ -1,6 +1,6 @@
-package tn.riadh.myfin.sale;
+package tn.riadh.myfin.sale.domain;
 
-import tn.riadh.myfin.core.product.domain.ProductId;
+import tn.riadh.myfin.product.domain.ProductId;
 
 public final class SaleLine {
     private final SaleLineId id;

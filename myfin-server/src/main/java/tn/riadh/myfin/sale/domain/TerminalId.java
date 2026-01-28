@@ -1,24 +1,24 @@
-package tn.riadh.myfin.core.operator.domain;
+package tn.riadh.myfin.sale.domain;
 
 import java.util.UUID;
 
-public class OperatorId {
+public final class TerminalId {
 
     private final UUID value;
 
-    private OperatorId(UUID value) {
+    private TerminalId(final UUID value) {
         if (value == null) {
-            throw new IllegalArgumentException("OperatorId cannot be null");
+            throw new IllegalArgumentException("TerminalId cannot be null");
         }
         this.value = value;
     }
 
-    public UUID value() {
-        return value;
+    public static TerminalId generate() {
+        return new TerminalId(UUID.randomUUID());
     }
 
-    public static OperatorId generate() {
-        return new OperatorId(UUID.randomUUID());
+    public UUID value() {
+        return value;
     }
 
     @Override
@@ -26,10 +26,10 @@ public class OperatorId {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof OperatorId)) {
+        if (!(obj instanceof TerminalId)) {
             return false;
         }
-        OperatorId other = (OperatorId) obj;
+        TerminalId other = (TerminalId) obj;
         return value.equals(other.value);
     }
 

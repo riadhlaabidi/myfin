@@ -1,24 +1,24 @@
-package tn.riadh.myfin.core.terminal.domain;
+package tn.riadh.myfin.sale.domain;
 
 import java.util.UUID;
 
-public final class TerminalId {
+public final class StoreId {
 
     private final UUID value;
 
-    private TerminalId(final UUID value) {
+    private StoreId(UUID value) {
         if (value == null) {
-            throw new IllegalArgumentException("TerminalId cannot be null");
+            throw new IllegalArgumentException("StoreId cannot be null");
         }
         this.value = value;
     }
 
-    public static TerminalId generate() {
-        return new TerminalId(UUID.randomUUID());
-    }
-
     public UUID value() {
         return value;
+    }
+
+    public static StoreId generate() {
+        return new StoreId(UUID.randomUUID());
     }
 
     @Override
@@ -26,10 +26,10 @@ public final class TerminalId {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof TerminalId)) {
+        if (!(obj instanceof StoreId)) {
             return false;
         }
-        TerminalId other = (TerminalId) obj;
+        StoreId other = (StoreId) obj;
         return value.equals(other.value);
     }
 
