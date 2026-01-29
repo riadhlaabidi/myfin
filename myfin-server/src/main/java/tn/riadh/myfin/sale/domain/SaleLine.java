@@ -1,8 +1,10 @@
 package tn.riadh.myfin.sale.domain;
 
+import org.jmolecules.ddd.types.Entity;
+
 import tn.riadh.myfin.product.domain.ProductId;
 
-public final class SaleLine {
+public final class SaleLine implements Entity<Sale, SaleLineId> {
     private final SaleLineId id;
     private final SaleId saleId;
     private final ProductId productId;
@@ -26,6 +28,11 @@ public final class SaleLine {
 
     public static SaleLine create(SaleId saleId, ProductId productId, long quantity) {
         return new SaleLine(saleId, productId, quantity);
+    }
+
+    @Override
+    public SaleLineId getId() {
+        return id;
     }
 
     @Override

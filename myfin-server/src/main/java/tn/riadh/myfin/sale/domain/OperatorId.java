@@ -2,7 +2,9 @@ package tn.riadh.myfin.sale.domain;
 
 import java.util.UUID;
 
-public class OperatorId {
+import org.jmolecules.ddd.types.Identifier;
+
+public class OperatorId implements Identifier {
 
     private final UUID value;
 

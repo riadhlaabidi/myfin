@@ -45,6 +45,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- jmolecules -->
+		<dependency>
+			<groupId>org.jmolecules</groupId>
+			<artifactId>jmolecules-ddd</artifactId>
+		</dependency>
+
 		<!-- Testing -->
 		<dependency>
 			<groupId>org.springframework.modulith</groupId>

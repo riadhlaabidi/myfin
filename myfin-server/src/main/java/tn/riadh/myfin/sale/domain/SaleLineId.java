@@ -2,7 +2,9 @@ package tn.riadh.myfin.sale.domain;
 
 import java.util.UUID;
 
-public final class SaleLineId {
+import org.jmolecules.ddd.types.Identifier;
+
+public final class SaleLineId implements Identifier {
     private final UUID value;
 
     private SaleLineId(UUID value) {

@@ -1,6 +1,7 @@
 spring:
   application:
-    name: MyFin
+    name: Myfin
   profiles:
     active: dev,jdbc
-
+  modulith:
+    detection-strategry: explicitly-annotated

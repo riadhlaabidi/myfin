@@ -4,22 +4,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jmolecules.ddd.types.AggregateRoot;
+import org.jmolecules.event.types.DomainEvent;
+
+import tn.riadh.myfin.sale.domain.events.SaleCompleted;
+import tn.riadh.myfin.sale.domain.events.SaleLineAdded;
+import tn.riadh.myfin.sale.domain.events.SaleStarted;
+
 /**
  * Aggregate root representing a retail sale.
- * <p>
- * Encapsulates the data associated with a transaction recorded at a point of
- * sale.
- * <p>
- * Instances of this class are identified by a SaleId and are treated
- * as immutable domain objects once created.
  */
-public final class Sale {
+public final class Sale implements AggregateRoot<Sale, SaleId> {
     private final SaleId id;
     private SaleStatus status;
     private final StoreId storeId;
     private final TerminalId terminalId;
     private final OperatorId operatorId;
     private final List<SaleLine> lines;
+
+    private final List<DomainEvent> domainEvents = new ArrayList<>();
 
     private Sale(StoreId storeId, TerminalId terminalId, OperatorId operatorId) {
         if (storeId == null) {
@@ -39,36 +42,59 @@ public final class Sale {
         this.lines = new ArrayList<>();
     }
 
-    public static Sale create(StoreId storeId, TerminalId terminalId, OperatorId operatorId) {
-        return new Sale(storeId, terminalId, operatorId);
+    public static Sale start(StoreId storeId, TerminalId terminalId, OperatorId operatorId) {
+        Sale sale = new Sale(storeId, terminalId, operatorId);
+        sale.registerEvent(SaleStarted.create(storeId, terminalId, operatorId));
+        return sale;
     }
 
-    public SaleId id() {
-        return id;
+    public void addLine(SaleLine line) {
+        if (line == null) {
+            throw new IllegalArgumentException("SaleLine cannot be null");
+        }
+        lines.add(line);
+        registerEvent(SaleLineAdded.create(id));
     }
 
-    public StoreId storeId() {
-        return storeId;
-    }
-
-    public TerminalId terminalId() {
-        return terminalId;
-    }
-
-    public OperatorId operatorId() {
-        return operatorId;
-    }
-
-    public SaleStatus status() {
-        return status;
-    }
-
-    public List<SaleLine> lines() {
+    public List<SaleLine> getLines() {
         return Collections.unmodifiableList(lines);
     }
 
-    public void addLine(SaleLine saleLine) {
-        lines.add(saleLine);
+    public void complete() {
+        if (status.isCompleted() || status.isVoided()) {
+            throw new IllegalStateException("Cannot complete a sale in " + status.displayName() + " state");
+        }
+        this.status = SaleStatus.COMPLETED;
+        registerEvent(SaleCompleted.create(storeId, terminalId, operatorId));
+    }
+
+    @Override
+    public SaleId getId() {
+        return id;
+    }
+
+    public SaleStatus getStatus() {
+        return status;
+    }
+
+    public StoreId getStoreId() {
+        return storeId;
+    }
+
+    public TerminalId getTerminalId() {
+        return terminalId;
+    }
+
+    public OperatorId getOperatorId() {
+        return operatorId;
+    }
+
+    public List<DomainEvent> getDomainEvents() {
+        return Collections.unmodifiableList(domainEvents);
+    }
+
+    private void registerEvent(DomainEvent event) {
+        domainEvents.add(event);
     }
 
     @Override

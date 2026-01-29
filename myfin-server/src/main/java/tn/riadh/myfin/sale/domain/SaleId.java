@@ -2,13 +2,15 @@ package tn.riadh.myfin.sale.domain;
 
 import java.util.UUID;
 
+import org.jmolecules.ddd.types.Identifier;
+
 /**
  * Identifier type for Sale.
  *
  * Represents the unique identity of a Sale instance. This type exists to
  * provide explicit typing and avoid misuse of raw identifier values.
  */
-public final class SaleId {
+public final class SaleId implements Identifier {
 
     private final UUID value;
 

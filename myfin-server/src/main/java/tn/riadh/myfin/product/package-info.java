@@ -1,2 +1,2 @@
-@org.springframework.modulith.ApplicationModule
+@org.springframework.modulith.ApplicationModule(displayName = "Product", allowedDependencies = {})
 package tn.riadh.myfin.product;

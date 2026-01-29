@@ -2,7 +2,9 @@ package tn.riadh.myfin.sale.domain;
 
 import java.util.UUID;
 
-public final class TerminalId {
+import org.jmolecules.ddd.types.Identifier;
+
+public final class TerminalId implements Identifier {
 
     private final UUID value;
 
