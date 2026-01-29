@@ -37,6 +37,8 @@
     <java.version>25</java.version>
     <spring-modulith.version>2.0.2</spring-modulith.version>
     <jmolecules.version>2025.0.2</jmolecules.version>
+    <jmolecules-integrations.version>0.33.0</jmolecules-integrations.version>
+    <archunit.version>1.4.1</archunit.version>
     <maven.compiler.release>25</maven.compiler.release>
     <maven.compiler.target>25</maven.compiler.target>
   </properties>
