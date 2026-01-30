@@ -4,6 +4,12 @@ import java.util.UUID;
 
 import org.jmolecules.ddd.types.Identifier;
 
+/**
+ * Identifier type for {@link SaleLine}.
+ *
+ * Represents the unique identity of a SaleLine instance. This type exists to
+ * provide explicit typing and avoid misuse of raw identifier values.
+ */
 public final class SaleLineId implements Identifier {
     private final UUID value;
 

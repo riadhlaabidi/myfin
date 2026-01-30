@@ -5,17 +5,19 @@ import java.math.RoundingMode;
 import java.util.Currency;
 import java.util.Objects;
 
-public final class MonetaryAmount {
+import org.jmolecules.ddd.types.ValueObject;
+
+public final class MonetaryAmount implements ValueObject {
 
     private final BigDecimal amount;
     private final Currency currency;
 
     private MonetaryAmount(final BigDecimal amount, final Currency currency) {
         if (amount == null) {
-            throw new IllegalArgumentException("Monetary amount cannot be null");
+            throw new IllegalArgumentException("amount cannot be null");
         }
         if (currency == null) {
-            throw new IllegalArgumentException("Monetary currency cannot be null");
+            throw new IllegalArgumentException("currency cannot be null");
         }
         int scale = currency.getDefaultFractionDigits();
         this.amount = amount.setScale(scale, RoundingMode.HALF_UP);

@@ -7,10 +7,6 @@ import java.util.List;
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.event.types.DomainEvent;
 
-import tn.riadh.myfin.sale.domain.events.SaleCompleted;
-import tn.riadh.myfin.sale.domain.events.SaleLineAdded;
-import tn.riadh.myfin.sale.domain.events.SaleStarted;
-
 /**
  * Aggregate root representing a retail sale.
  */

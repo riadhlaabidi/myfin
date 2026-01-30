@@ -3,21 +3,23 @@ package tn.riadh.myfin.sale.domain;
 import org.jmolecules.ddd.types.Entity;
 
 import tn.riadh.myfin.product.domain.ProductId;
+import tn.riadh.myfin.shared.quantity.Quantity;
 
 public final class SaleLine implements Entity<Sale, SaleLineId> {
     private final SaleLineId id;
     private final SaleId saleId;
     private final ProductId productId;
-    private final long quantity;
+    // WARN: would need to prevent invalid quantities for products
+    private final Quantity quantity;
 
-    private SaleLine(SaleId saleId, ProductId productId, long quantity) {
+    private SaleLine(SaleId saleId, ProductId productId, Quantity quantity) {
         if (saleId == null) {
             throw new IllegalArgumentException("SaleId cannot be null");
         }
         if (productId == null) {
             throw new IllegalArgumentException("ProductId cannot be null");
         }
-        if (quantity <= 0) {
+        if (quantity.isZeroAmount()) {
             throw new IllegalArgumentException("Quantity should be greater than zero");
         }
         this.id = SaleLineId.generate();
@@ -26,13 +28,25 @@ public final class SaleLine implements Entity<Sale, SaleLineId> {
         this.quantity = quantity;
     }
 
-    public static SaleLine create(SaleId saleId, ProductId productId, long quantity) {
+    public static SaleLine create(SaleId saleId, ProductId productId, Quantity quantity) {
         return new SaleLine(saleId, productId, quantity);
     }
 
     @Override
     public SaleLineId getId() {
         return id;
+    }
+
+    public SaleId saleId() {
+        return saleId;
+    }
+
+    public ProductId productId() {
+        return productId;
+    }
+
+    public Quantity quantity() {
+        return quantity;
     }
 
     @Override

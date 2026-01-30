@@ -1,36 +1,25 @@
-package tn.riadh.myfin.sale.domain.events;
+package tn.riadh.myfin.sale.domain;
 
 import java.time.Instant;
 import java.util.UUID;
 
-import org.jmolecules.event.types.DomainEvent;
+import tn.riadh.myfin.shared.domain.AbstractDomainEvent;
 
-import tn.riadh.myfin.sale.domain.OperatorId;
-import tn.riadh.myfin.sale.domain.StoreId;
-import tn.riadh.myfin.sale.domain.TerminalId;
-
-public class SaleStarted implements DomainEvent {
-    private final UUID eventId;
+class SaleStarted extends AbstractDomainEvent {
     private final StoreId storeId;
     private final TerminalId terminalId;
     private final OperatorId operatorId;
-    private final Instant occurredAt;
 
     private SaleStarted(UUID eventId, StoreId storeId, TerminalId terminalId,
             OperatorId operatorId, Instant occurredAt) {
-        this.eventId = eventId;
+        super(eventId, occurredAt);
         this.storeId = storeId;
         this.terminalId = terminalId;
         this.operatorId = operatorId;
-        this.occurredAt = occurredAt;
     }
 
     public static SaleStarted create(StoreId storeId, TerminalId terminalId, OperatorId operatorId) {
         return new SaleStarted(UUID.randomUUID(), storeId, terminalId, operatorId, Instant.now());
-    }
-
-    public UUID getEventId() {
-        return eventId;
     }
 
     public StoreId getStoreId() {
@@ -43,9 +32,5 @@ public class SaleStarted implements DomainEvent {
 
     public OperatorId getOperatorId() {
         return operatorId;
-    }
-
-    public Instant getOccurredAt() {
-        return occurredAt;
     }
 }

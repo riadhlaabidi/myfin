@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.jmolecules.ddd.types.Identifier;
 
-public class OperatorId implements Identifier {
+public final class OperatorId implements Identifier {
 
     private final UUID value;
 
