@@ -1,5 +1,6 @@
 package tn.riadh.myfin.sale.domain;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,11 +18,13 @@ public final class Sale implements AggregateRoot<Sale, SaleId> {
     private final TerminalId terminalId;
     private final OperatorId operatorId;
     private final List<SaleLine> lines;
+    private final Instant startedAt;
+    private final Instant completedAt;
 
     private final List<DomainEvent> domainEvents = new ArrayList<>();
 
     private Sale(SaleId id, SaleStatus status, StoreId storeId, TerminalId terminalId, OperatorId operatorId,
-            List<SaleLine> lines) {
+            List<SaleLine> lines, ) {
         if (id == null) {
             throw new IllegalArgumentException("SaleId cannot be null");
         }
