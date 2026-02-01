@@ -23,6 +23,10 @@ public final class OperatorId implements Identifier {
         return new OperatorId(UUID.randomUUID());
     }
 
+    public static OperatorId from(String id) {
+        return new OperatorId(UUID.fromString(id));
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -44,4 +48,5 @@ public final class OperatorId implements Identifier {
     public String toString() {
         return value.toString();
     }
+
 }

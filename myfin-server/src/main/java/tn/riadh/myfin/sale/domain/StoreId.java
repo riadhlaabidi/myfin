@@ -23,6 +23,10 @@ public final class StoreId implements Identifier {
         return new StoreId(UUID.randomUUID());
     }
 
+    public static StoreId from(String id) {
+        return new StoreId(UUID.fromString(id));
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

@@ -19,6 +19,10 @@ public final class TerminalId implements Identifier {
         return new TerminalId(UUID.randomUUID());
     }
 
+    public static TerminalId from(String id) {
+        return new TerminalId(UUID.fromString(id));
+    }
+
     public UUID value() {
         return value;
     }
@@ -44,4 +48,5 @@ public final class TerminalId implements Identifier {
     public String toString() {
         return value.toString();
     }
+
 }

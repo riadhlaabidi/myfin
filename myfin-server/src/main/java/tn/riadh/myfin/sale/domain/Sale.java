@@ -20,7 +20,11 @@ public final class Sale implements AggregateRoot<Sale, SaleId> {
 
     private final List<DomainEvent> domainEvents = new ArrayList<>();
 
-    private Sale(StoreId storeId, TerminalId terminalId, OperatorId operatorId) {
+    private Sale(SaleId id, SaleStatus status, StoreId storeId, TerminalId terminalId, OperatorId operatorId,
+            List<SaleLine> lines) {
+        if (id == null) {
+            throw new IllegalArgumentException("SaleId cannot be null");
+        }
         if (storeId == null) {
             throw new IllegalArgumentException("StoreId cannot be null");
         }
@@ -30,18 +34,23 @@ public final class Sale implements AggregateRoot<Sale, SaleId> {
         if (operatorId == null) {
             throw new IllegalArgumentException("OperatorId cannot be null");
         }
-        this.id = SaleId.generate();
-        this.status = SaleStatus.OPEN;
+        this.id = id;
+        this.status = status;
         this.storeId = storeId;
         this.terminalId = terminalId;
         this.operatorId = operatorId;
-        this.lines = new ArrayList<>();
+        this.lines = lines;
     }
 
     public static Sale start(StoreId storeId, TerminalId terminalId, OperatorId operatorId) {
-        Sale sale = new Sale(storeId, terminalId, operatorId);
-        sale.registerEvent(SaleStarted.create(storeId, terminalId, operatorId));
+        Sale sale = new Sale(SaleId.generate(), SaleStatus.OPEN, storeId, terminalId, operatorId, new ArrayList<>());
+        sale.registerEvent(SaleStarted.create(sale.id, storeId, terminalId, operatorId));
         return sale;
+    }
+
+    public static Sale reconstitute(SaleId id, SaleStatus status, StoreId storeId, TerminalId terminalId,
+            OperatorId operatorId, List<SaleLine> lines) {
+        return new Sale(id, status, storeId, terminalId, operatorId, lines);
     }
 
     public void addLine(SaleLine line) {

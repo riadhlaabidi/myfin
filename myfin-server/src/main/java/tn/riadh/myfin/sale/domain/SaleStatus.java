@@ -1,6 +1,6 @@
 package tn.riadh.myfin.sale.domain;
 
-enum SaleStatus {
+public enum SaleStatus {
     OPEN("Open"),
     COMPLETED("Completed"),
     VOIDED("Voided");

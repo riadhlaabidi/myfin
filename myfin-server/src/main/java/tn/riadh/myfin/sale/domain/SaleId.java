@@ -29,6 +29,10 @@ public final class SaleId implements Identifier {
         return new SaleId(UUID.randomUUID());
     }
 
+    public static SaleId from(String id) {
+        return new SaleId(UUID.fromString(id));
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
