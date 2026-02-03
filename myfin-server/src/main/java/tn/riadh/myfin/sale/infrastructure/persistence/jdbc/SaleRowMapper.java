@@ -24,7 +24,8 @@ public class SaleRowMapper implements RowMapper<Sale> {
                 StoreId.from(rs.getString("store_id")),
                 TerminalId.from(rs.getString("terminal_id")),
                 OperatorId.from(rs.getString("operator_id")),
-                new ArrayList<>());
+                new ArrayList<>(),
+                rs.getTimestamp("started_at").toInstant(),
+                rs.getTimestamp("finishedAt").toInstant());
     }
-
 }

@@ -19,12 +19,12 @@ public final class Sale implements AggregateRoot<Sale, SaleId> {
     private final OperatorId operatorId;
     private final List<SaleLine> lines;
     private final Instant startedAt;
-    private final Instant completedAt;
+    private Instant finishedAt;
 
     private final List<DomainEvent> domainEvents = new ArrayList<>();
 
     private Sale(SaleId id, SaleStatus status, StoreId storeId, TerminalId terminalId, OperatorId operatorId,
-            List<SaleLine> lines, ) {
+            List<SaleLine> lines, Instant startedAt, Instant finishedAt) {
         if (id == null) {
             throw new IllegalArgumentException("SaleId cannot be null");
         }
@@ -43,17 +43,20 @@ public final class Sale implements AggregateRoot<Sale, SaleId> {
         this.terminalId = terminalId;
         this.operatorId = operatorId;
         this.lines = lines;
+        this.startedAt = startedAt;
+        this.finishedAt = finishedAt;
     }
 
     public static Sale start(StoreId storeId, TerminalId terminalId, OperatorId operatorId) {
-        Sale sale = new Sale(SaleId.generate(), SaleStatus.OPEN, storeId, terminalId, operatorId, new ArrayList<>());
+        Sale sale = new Sale(SaleId.generate(), SaleStatus.OPEN, storeId, terminalId, operatorId, new ArrayList<>(),
+                Instant.now(), null);
         sale.registerEvent(SaleStarted.create(sale.id, storeId, terminalId, operatorId));
         return sale;
     }
 
     public static Sale reconstitute(SaleId id, SaleStatus status, StoreId storeId, TerminalId terminalId,
-            OperatorId operatorId, List<SaleLine> lines) {
-        return new Sale(id, status, storeId, terminalId, operatorId, lines);
+            OperatorId operatorId, List<SaleLine> lines, Instant startedAt, Instant finishedAt) {
+        return new Sale(id, status, storeId, terminalId, operatorId, lines, startedAt, finishedAt);
     }
 
     public void addLine(SaleLine line) {
@@ -64,16 +67,24 @@ public final class Sale implements AggregateRoot<Sale, SaleId> {
         registerEvent(SaleLineAdded.create(id));
     }
 
-    public List<SaleLine> getLines() {
-        return Collections.unmodifiableList(lines);
+    public void complete() {
+        ensureModifiable();
+
+        if (lines.isEmpty()) {
+            throw new IllegalStateException("Cannot complete a sale with 0 lines");
+        }
+
+        this.status = SaleStatus.COMPLETED;
+        this.finishedAt = Instant.now();
+        registerEvent(SaleCompleted.create(storeId, terminalId, operatorId));
     }
 
-    public void complete() {
-        if (status.isCompleted() || status.isVoided()) {
-            throw new IllegalStateException("Cannot complete a sale in " + status.displayName() + " state");
-        }
-        this.status = SaleStatus.COMPLETED;
-        registerEvent(SaleCompleted.create(storeId, terminalId, operatorId));
+    public void voidSale() {
+        ensureModifiable();
+
+        this.status = SaleStatus.VOIDED;
+        this.finishedAt = Instant.now();
+        registerEvent(SaleVoided.create(id));
     }
 
     @Override
@@ -81,20 +92,32 @@ public final class Sale implements AggregateRoot<Sale, SaleId> {
         return id;
     }
 
-    public SaleStatus getStatus() {
+    public SaleStatus status() {
         return status;
     }
 
-    public StoreId getStoreId() {
+    public StoreId storeId() {
         return storeId;
     }
 
-    public TerminalId getTerminalId() {
+    public TerminalId terminalId() {
         return terminalId;
     }
 
-    public OperatorId getOperatorId() {
+    public OperatorId operatorId() {
         return operatorId;
+    }
+
+    public List<SaleLine> lines() {
+        return Collections.unmodifiableList(lines);
+    }
+
+    public Instant startedAt() {
+        return startedAt;
+    }
+
+    public Instant finishedAt() {
+        return finishedAt;
     }
 
     public List<DomainEvent> getDomainEvents() {
@@ -128,6 +151,14 @@ public final class Sale implements AggregateRoot<Sale, SaleId> {
                 + ", status=" + status.displayName()
                 + ", storeId=" + storeId
                 + ", terminalId=" + terminalId
-                + ", operatorId=" + operatorId;
+                + ", operatorId=" + operatorId
+                + ", startedAt=" + startedAt
+                + ", finishedAt=" + finishedAt;
+    }
+
+    private void ensureModifiable() {
+        if (!status.isOpen()) {
+            throw new IllegalStateException("Cannot modify sale in " + status.displayName() + " state");
+        }
     }
 }
