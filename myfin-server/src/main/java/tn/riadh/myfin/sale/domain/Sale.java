@@ -71,7 +71,7 @@ public final class Sale implements AggregateRoot<Sale, SaleId> {
         ensureModifiable();
 
         if (lines.isEmpty()) {
-            throw new IllegalStateException("Cannot complete a sale with 0 lines");
+            throw new IllegalStateException("Cannot complete an emply sale");
         }
 
         this.status = SaleStatus.COMPLETED;

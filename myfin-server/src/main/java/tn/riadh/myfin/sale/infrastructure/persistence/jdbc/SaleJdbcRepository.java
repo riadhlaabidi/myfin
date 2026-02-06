@@ -8,14 +8,13 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import tn.riadh.myfin.infrastructure.config.MyfinConstants;
 import tn.riadh.myfin.sale.domain.Sale;
 import tn.riadh.myfin.sale.domain.SaleId;
 import tn.riadh.myfin.sale.domain.SaleLine;
 import tn.riadh.myfin.sale.domain.SaleRepository;
 
 @Repository
-@Profile(MyfinConstants.JDBC)
+@Profile("jdbc")
 public class SaleJdbcRepository implements SaleRepository {
 
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -52,7 +51,9 @@ public class SaleJdbcRepository implements SaleRepository {
                         id,
                         store_id,
                         terminal_id,
-                        operator_id
+                        operator_id,
+                        started_at,
+                        finished_at
                     FROM sales
                     WHERE id = :id
                 """;
