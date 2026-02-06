@@ -5,3 +5,5 @@ spring:
     active: jdbc
   liquibase:
     contexts: test
+  modulith:
+    detection-strategy: explicitly-annotated

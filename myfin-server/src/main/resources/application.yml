@@ -4,4 +4,4 @@ spring:
   profiles:
     active: dev,jdbc
   modulith:
-    detection-strategry: explicitly-annotated
+    detection-strategy: explicity-annotated
