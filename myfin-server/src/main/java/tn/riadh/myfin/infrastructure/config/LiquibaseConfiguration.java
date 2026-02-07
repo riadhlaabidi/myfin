@@ -20,7 +20,7 @@ public class LiquibaseConfiguration {
 
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog("classpath:/db/changelog-master.yaml");
+        liquibase.setChangeLog("classpath:/db/changelog/changelog-master.yaml");
         liquibase.setTag(liquibaseProperties.getTag());
 
         List<String> contexts = liquibaseProperties.getContexts();

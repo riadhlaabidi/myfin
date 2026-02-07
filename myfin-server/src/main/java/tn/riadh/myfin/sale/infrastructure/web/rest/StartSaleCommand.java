@@ -1,6 +1,6 @@
 package tn.riadh.myfin.sale.infrastructure.web.rest;
 
-public class StartSaleCommand {
+class StartSaleCommand {
 
     private String storeId;
     private String terminalId;
