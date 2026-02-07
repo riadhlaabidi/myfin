@@ -1,7 +1,6 @@
 package tn.riadh.myfin.sale.infrastructure.web.rest;
 
-class AddSaleLineCommand {
-
+final class AddSaleLineCommand {
     private String productId;
     private String quantity;
     private String unit;

@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import tn.riadh.myfin.sale.domain.OperatorId;
 import tn.riadh.myfin.sale.domain.Sale;
-import tn.riadh.myfin.sale.domain.SaleId;
 import tn.riadh.myfin.sale.domain.SaleRepository;
 import tn.riadh.myfin.sale.domain.StoreId;
 import tn.riadh.myfin.sale.domain.TerminalId;
@@ -23,12 +22,12 @@ public class StartSaleService {
     }
 
     @Transactional
-    public SaleId startSale(final StoreId storeId, final TerminalId terminalId, final OperatorId operatorId) {
+    public Sale startSale(final StoreId storeId, final TerminalId terminalId, final OperatorId operatorId) {
         Sale sale = Sale.start(storeId, terminalId, operatorId);
 
         saleRepository.save(sale);
         logger.info("Started a new sale with id {}", sale.getId().toString());
 
-        return sale.getId();
+        return sale;
     }
 }

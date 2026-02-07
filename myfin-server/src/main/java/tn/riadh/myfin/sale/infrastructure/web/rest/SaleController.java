@@ -1,5 +1,6 @@
 package tn.riadh.myfin.sale.infrastructure.web.rest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ import tn.riadh.myfin.shared.quantity.Quantity;
 
 @RestController
 @RequestMapping("/api/sales")
-public class SaleController {
+final class SaleController {
 
     private final StartSaleService startSaleService;
     private final AddSaleLineService addSaleLineService;
@@ -29,14 +30,20 @@ public class SaleController {
         this.addSaleLineService = addSaleLineService;
     }
 
+    /**
+     * Starts a sale operation.
+     */
     @PostMapping("/start")
-    public ResponseEntity<SaleId> start(@RequestBody StartSaleCommand command) {
-        SaleId saleId = startSaleService.startSale(
+    public ResponseEntity<StartSaleResponse> start(@RequestBody StartSaleCommand command) {
+        Sale sale = startSaleService.startSale(
                 StoreId.from(command.getStoreId()),
                 TerminalId.from(command.getTerminalId()),
                 OperatorId.from(command.getOperatorId()));
 
-        return ResponseEntity.ok(saleId);
+        StartSaleResponse response = new StartSaleResponse(sale.getId().value(), sale.status());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 
     @PostMapping("/{saleId}/add")

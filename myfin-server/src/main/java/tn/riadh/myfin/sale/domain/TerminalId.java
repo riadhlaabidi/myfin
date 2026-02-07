@@ -48,5 +48,4 @@ public final class TerminalId implements Identifier {
     public String toString() {
         return value.toString();
     }
-
 }

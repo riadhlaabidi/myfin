@@ -25,7 +25,7 @@ public class AddSaleLineService {
     }
 
     @Transactional
-    public Sale addSaleLine(SaleId saleId, ProductId productId, Quantity quantity) {
+    public Sale addSaleLine(final SaleId saleId, final ProductId productId, final Quantity quantity) {
         Sale sale = saleRepository.findById(saleId).orElseThrow(() -> SaleNotFoundException.byId(saleId));
         SaleLine line = SaleLine.create(saleId, productId, quantity);
         sale.addLine(line);
