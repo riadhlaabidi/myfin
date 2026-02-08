@@ -20,7 +20,7 @@ import tn.riadh.myfin.sale.domain.SaleRepository;
 public class SaleJdbcRepository implements SaleRepository {
 
     private NamedParameterJdbcTemplate jdbcTemplate;
-    private SaleRowMapper rowMapper = new SaleRowMapper();
+    private SaleResultSetExtractor saleRse = new SaleResultSetExtractor();
 
     public SaleJdbcRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -49,23 +49,27 @@ public class SaleJdbcRepository implements SaleRepository {
     public Optional<Sale> findById(SaleId id) {
         String sql = """
                     SELECT
-                        id,
-                        store_id,
-                        terminal_id,
-                        operator_id,
-                        started_at,
-                        finished_at
-                    FROM sales
-                    WHERE id = :id
+                        s.id AS sale_id,
+                        s.status,
+                        s.store_id,
+                        s.terminal_id,
+                        s.operator_id,
+                        s.started_at,
+                        s.finished_at,
+                        l.id as sale_line_id,
+                        l.product_id,
+                        l.quantity,
+                        l.unit
+                    FROM sales s
+                    LEFT JOIN sale_lines l
+                    ON s.id = l.sale_id
+                    WHERE s.id = :id
                 """;
 
         SqlParameterSource params = new MapSqlParameterSource().addValue("id", id.value());
 
-        List<Sale> sale = jdbcTemplate.query(sql, params, rowMapper);
-        if (sale.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(sale.getFirst());
+        Sale sale = jdbcTemplate.query(sql, params, saleRse);
+        return Optional.ofNullable(sale);
     }
 
     private void saveSaleLines(List<SaleLine> saleLines) {

@@ -17,7 +17,6 @@ import tn.riadh.myfin.shared.quantity.Quantity;
 public class AddSaleLineService {
 
     private final Logger logger = LoggerFactory.getLogger(AddSaleLineService.class);
-
     private final SaleRepository saleRepository;
 
     public AddSaleLineService(final SaleRepository saleRepository) {

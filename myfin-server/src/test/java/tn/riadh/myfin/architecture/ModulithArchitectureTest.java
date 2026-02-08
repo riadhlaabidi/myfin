@@ -11,10 +11,12 @@ import tn.riadh.myfin.MyFinApplication;
 
 public class ModulithArchitectureTest {
 
+    ApplicationModules modules = ApplicationModules.of(MyFinApplication.class);
+
     @Test
     public void modulesTest() {
         ArchRule onion = JMoleculesArchitectureRules.ensureOnionSimple();
         VerificationOptions options = VerificationOptions.defaults().withAdditionalVerifications(onion);
-        ApplicationModules.of(MyFinApplication.class).verify(options);
+        modules.verify(options);
     }
 }

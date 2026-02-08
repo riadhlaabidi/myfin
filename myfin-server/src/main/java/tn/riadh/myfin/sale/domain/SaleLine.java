@@ -1,5 +1,7 @@
 package tn.riadh.myfin.sale.domain;
 
+import java.util.UUID;
+
 import org.jmolecules.ddd.types.Entity;
 
 import tn.riadh.myfin.product.domain.ProductId;
@@ -12,7 +14,10 @@ public final class SaleLine implements Entity<Sale, SaleLineId> {
     // WARN: would need to prevent invalid quantities for products
     private final Quantity quantity;
 
-    private SaleLine(SaleId saleId, ProductId productId, Quantity quantity) {
+    private SaleLine(SaleLineId id, SaleId saleId, ProductId productId, Quantity quantity) {
+        if (id == null) {
+            throw new IllegalArgumentException("SaleLineId cannot be null");
+        }
         if (saleId == null) {
             throw new IllegalArgumentException("SaleId cannot be null");
         }
@@ -22,14 +27,18 @@ public final class SaleLine implements Entity<Sale, SaleLineId> {
         if (quantity.isZeroAmount()) {
             throw new IllegalArgumentException("Quantity should be greater than zero");
         }
-        this.id = SaleLineId.generate();
+        this.id = id;
         this.saleId = saleId;
         this.productId = productId;
         this.quantity = quantity;
     }
 
     public static SaleLine create(SaleId saleId, ProductId productId, Quantity quantity) {
-        return new SaleLine(saleId, productId, quantity);
+        return new SaleLine(SaleLineId.generate(), saleId, productId, quantity);
+    }
+
+    public static SaleLine reconstitute(SaleLineId id, SaleId saleId, ProductId productId, Quantity quantity) {
+        return new SaleLine(id, saleId, productId, quantity);
     }
 
     @Override

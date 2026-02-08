@@ -20,6 +20,10 @@ public final class Quantity implements ValueObject {
         this.unit = unit;
     }
 
+    public static Quantity of(BigDecimal amount, Unit unit) {
+        return new Quantity(amount, unit);
+    }
+
     public static Quantity ofPieces(long amount) {
         return new Quantity(BigDecimal.valueOf(amount), Unit.PIECE);
     }

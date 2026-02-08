@@ -11,6 +11,7 @@ import org.jmolecules.ddd.types.Identifier;
  * provide explicit typing and avoid misuse of raw identifier values.
  */
 public final class SaleLineId implements Identifier {
+    public static final SaleLineId SaleLine = null;
     private final UUID value;
 
     private SaleLineId(UUID value) {
@@ -22,6 +23,10 @@ public final class SaleLineId implements Identifier {
 
     public static SaleLineId generate() {
         return new SaleLineId(UUID.randomUUID());
+    }
+
+    public static SaleLineId from(String uuid) {
+        return new SaleLineId(UUID.fromString(uuid));
     }
 
     public UUID value() {
