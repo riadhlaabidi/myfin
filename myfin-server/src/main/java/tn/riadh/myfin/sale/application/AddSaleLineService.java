@@ -15,7 +15,6 @@ import tn.riadh.myfin.shared.quantity.Quantity;
 
 @Service
 public class AddSaleLineService {
-
     private final Logger logger = LoggerFactory.getLogger(AddSaleLineService.class);
     private final SaleRepository saleRepository;
 
@@ -25,7 +24,9 @@ public class AddSaleLineService {
 
     @Transactional
     public Sale addSaleLine(final SaleId saleId, final ProductId productId, final Quantity quantity) {
-        Sale sale = saleRepository.findById(saleId).orElseThrow(() -> SaleNotFoundException.byId(saleId));
+        Sale sale = saleRepository
+                .findById(saleId)
+                .orElseThrow(() -> SaleNotFoundException.byId(saleId));
         SaleLine line = SaleLine.create(saleId, productId, quantity);
         sale.addLine(line);
 

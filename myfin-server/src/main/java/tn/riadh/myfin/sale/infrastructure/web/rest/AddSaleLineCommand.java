@@ -1,6 +1,8 @@
 package tn.riadh.myfin.sale.infrastructure.web.rest;
 
-final class AddSaleLineCommand {
+import java.io.Serializable;
+
+final class AddSaleLineCommand implements Serializable {
     private String productId;
     private String quantity;
     private String unit;

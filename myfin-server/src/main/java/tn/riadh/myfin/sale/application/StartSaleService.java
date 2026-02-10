@@ -14,7 +14,6 @@ import tn.riadh.myfin.sale.domain.TerminalId;
 @Service
 public class StartSaleService {
     private final Logger logger = LoggerFactory.getLogger(StartSaleService.class);
-
     private final SaleRepository saleRepository;
 
     public StartSaleService(final SaleRepository saleRepository) {

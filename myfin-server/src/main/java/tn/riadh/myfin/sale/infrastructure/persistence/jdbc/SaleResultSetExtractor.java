@@ -44,11 +44,14 @@ class SaleResultSetExtractor implements ResultSetExtractor<Sale> {
                         operatorId, lines, startedAt, finishedAt);
             }
 
-            SaleLineId id = SaleLineId.from(rs.getString("sale_line_id"));
-            ProductId productId = ProductId.from(rs.getString("product_id"));
-            Quantity quantity = Quantity.of(rs.getBigDecimal("quantity"), Unit.valueOf(rs.getString("unit")));
-            SaleLine line = SaleLine.reconstitute(id, saleSnapshot.getId(), productId, quantity);
-            lines.add(line);
+            String saleLineId = rs.getString("sale_line_id");
+            if (saleLineId != null) {
+                SaleLineId id = SaleLineId.from(rs.getString("sale_line_id"));
+                ProductId productId = ProductId.from(rs.getString("product_id"));
+                Quantity quantity = Quantity.of(rs.getBigDecimal("quantity"), Unit.valueOf(rs.getString("unit")));
+                SaleLine line = SaleLine.reconstitute(id, saleSnapshot.getId(), productId, quantity);
+                lines.add(line);
+            }
         }
 
         if (saleSnapshot == null) {

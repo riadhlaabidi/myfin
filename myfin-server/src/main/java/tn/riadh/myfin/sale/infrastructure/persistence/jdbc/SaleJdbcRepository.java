@@ -2,6 +2,7 @@ package tn.riadh.myfin.sale.infrastructure.persistence.jdbc;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.context.annotation.Profile;
@@ -28,21 +29,12 @@ public class SaleJdbcRepository implements SaleRepository {
 
     @Override
     public void save(Sale sale) {
-        String sql = """
-                INSERT INTO sales(id, status, store_id, terminal_id, operator_id, started_at)
-                VALUES (:id, :status, :store_id, :terminal_id, :operator_id, :started_at)
-                """;
-        MapSqlParameterSource params = new MapSqlParameterSource()
-                .addValue("id", sale.getId().value())
-                .addValue("status", sale.status().toString())
-                .addValue("store_id", sale.storeId().value())
-                .addValue("terminal_id", sale.terminalId().value())
-                .addValue("operator_id", sale.operatorId().value())
-                .addValue("started_at", Timestamp.from(sale.startedAt()));
-
-        jdbcTemplate.update(sql, params);
-
-        saveSaleLines(sale.lines());
+        if (existsById(sale.getId())) {
+            update(sale);
+        } else {
+            insert(sale);
+        }
+        saveSaleLines(sale.getId(), sale.lines());
     }
 
     @Override
@@ -56,7 +48,7 @@ public class SaleJdbcRepository implements SaleRepository {
                         s.operator_id,
                         s.started_at,
                         s.finished_at,
-                        l.id as sale_line_id,
+                        l.id AS sale_line_id,
                         l.product_id,
                         l.quantity,
                         l.unit
@@ -66,33 +58,77 @@ public class SaleJdbcRepository implements SaleRepository {
                     WHERE s.id = :id
                 """;
 
-        SqlParameterSource params = new MapSqlParameterSource().addValue("id", id.value());
-
-        Sale sale = jdbcTemplate.query(sql, params, saleRse);
+        Sale sale = jdbcTemplate.query(sql, Map.of("id", id.value()), saleRse);
         return Optional.ofNullable(sale);
     }
 
-    private void saveSaleLines(List<SaleLine> saleLines) {
-        // TODO: Update lines accordingly (orphaned)
-        if (saleLines.isEmpty()) {
+    private boolean existsById(SaleId saleId) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM sales WHERE id = :id)";
+        Boolean exists = jdbcTemplate.queryForObject(sql, Map.of("id", saleId.value()), Boolean.class);
+        return Boolean.TRUE.equals(exists);
+    }
+
+    private void insert(Sale sale) {
+        String sql = """
+                INSERT INTO sales(id, status, store_id, terminal_id, operator_id, started_at, finished_at)
+                VALUES (:id, :status, :store_id, :terminal_id, :operator_id, :started_at, :finished_at)
+                """;
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("id", sale.getId().value())
+                .addValue("status", sale.status().toString())
+                .addValue("store_id", sale.storeId().value())
+                .addValue("terminal_id", sale.terminalId().value())
+                .addValue("operator_id", sale.operatorId().value())
+                .addValue("started_at", Timestamp.from(sale.startedAt()))
+                .addValue("finished_at", sale.finishedAt() == null ? null : Timestamp.from(sale.finishedAt()));
+
+        jdbcTemplate.update(sql, params);
+    }
+
+    private void update(Sale sale) {
+        String sql = """
+                UPDATE sales SET
+                    status = :status,
+                    finished_at = :finished_at
+                WHERE id = :id
+                """;
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("id", sale.getId().value())
+                .addValue("status", sale.status().toString())
+                .addValue("finished_at", sale.finishedAt() == null ? null : Timestamp.from(sale.finishedAt()));
+
+        jdbcTemplate.update(sql, params);
+    }
+
+    private void saveSaleLines(SaleId saleId, List<SaleLine> lines) {
+        deleteOldSaleLines(saleId);
+
+        if (lines.isEmpty()) {
             return;
         }
+
         String sql = """
                 INSERT INTO sale_lines(id, sale_id, product_id, quantity, unit)
                 VALUES(:id, :sale_id, :product_id, :quantity, :unit)
                 """;
-        int linesCount = saleLines.size();
+        int linesCount = lines.size();
         SqlParameterSource[] params = new MapSqlParameterSource[linesCount];
 
         for (int i = 0; i < linesCount; i++) {
             params[i] = new MapSqlParameterSource()
-                    .addValue("id", saleLines.get(i).getId().value())
-                    .addValue("sale_id", saleLines.get(i).saleId().value())
-                    .addValue("product_id", saleLines.get(i).productId().value())
-                    .addValue("quantity", saleLines.get(i).quantity().amount())
-                    .addValue("unit", saleLines.get(i).quantity().unit().toString());
+                    .addValue("id", lines.get(i).getId().value())
+                    .addValue("sale_id", saleId.value())
+                    .addValue("product_id", lines.get(i).productId().value())
+                    .addValue("quantity", lines.get(i).quantity().amount())
+                    .addValue("unit", lines.get(i).quantity().unit().toString());
         }
 
         jdbcTemplate.batchUpdate(sql, params);
+    }
+
+    private void deleteOldSaleLines(SaleId saleId) {
+        String sql = "DELETE FROM sale_lines WHERE sale_id = :saleId";
+        jdbcTemplate.update(sql, Map.of("saleId", saleId.value()));
     }
 }

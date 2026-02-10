@@ -1,7 +1,5 @@
 package tn.riadh.myfin.sale.domain;
 
-import java.util.UUID;
-
 import org.jmolecules.ddd.types.Entity;
 
 import tn.riadh.myfin.product.domain.ProductId;
