@@ -1,14 +1,14 @@
 package tn.riadh.myfin.product.domain;
 
-import tn.riadh.myfin.shared.quantity.Unit;
+import tn.riadh.myfin.shared.quantity.UnitType;
 
 public final class Product {
     private final ProductId id;
     private final Barcode barcode;
     private ProductStatus status;
-    private final Unit unit;
+    private final UnitType unit;
 
-    private Product(ProductId id, Barcode barcode, ProductStatus status, Unit unit) {
+    private Product(ProductId id, Barcode barcode, ProductStatus status, UnitType unit) {
         if (id == null) {
             throw new IllegalArgumentException("ProductId cannot be null");
         }
@@ -21,7 +21,7 @@ public final class Product {
         this.unit = unit;
     }
 
-    public static Product create(String barcode, Unit unit) {
+    public static Product create(String barcode, UnitType unit) {
         return new Product(ProductId.generate(), Barcode.from(barcode), ProductStatus.ACTIVE, unit);
     }
 
@@ -37,7 +37,7 @@ public final class Product {
         return status;
     }
 
-    public Unit unit() {
+    public UnitType unit() {
         return unit;
     }
 

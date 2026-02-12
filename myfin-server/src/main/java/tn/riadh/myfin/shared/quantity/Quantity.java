@@ -7,9 +7,9 @@ import org.jmolecules.ddd.types.ValueObject;
 
 public final class Quantity implements ValueObject {
     private final BigDecimal amount;
-    private final Unit unit;
+    private final UnitType unit;
 
-    private Quantity(BigDecimal amount, Unit unit) {
+    private Quantity(BigDecimal amount, UnitType unit) {
         if (amount == null) {
             throw new IllegalArgumentException("amount cannot be null");
         }
@@ -20,20 +20,8 @@ public final class Quantity implements ValueObject {
         this.unit = unit;
     }
 
-    public static Quantity of(BigDecimal amount, Unit unit) {
+    public static Quantity of(BigDecimal amount, UnitType unit) {
         return new Quantity(amount, unit);
-    }
-
-    public static Quantity ofPieces(long amount) {
-        return new Quantity(BigDecimal.valueOf(amount), Unit.PIECE);
-    }
-
-    public static Quantity ofKilograms(BigDecimal amount) {
-        return new Quantity(amount, Unit.PIECE);
-    }
-
-    public static Quantity ofLiters(BigDecimal amount) {
-        return new Quantity(amount, Unit.LITER);
     }
 
     public boolean isZeroAmount() {
@@ -44,7 +32,7 @@ public final class Quantity implements ValueObject {
         return amount;
     }
 
-    public Unit unit() {
+    public UnitType unit() {
         return unit;
     }
 
@@ -67,7 +55,6 @@ public final class Quantity implements ValueObject {
 
     @Override
     public String toString() {
-        return amount.toPlainString() + " " + unit.displayName();
+        return amount.toPlainString() + " " + unit.symbol();
     }
-
 }

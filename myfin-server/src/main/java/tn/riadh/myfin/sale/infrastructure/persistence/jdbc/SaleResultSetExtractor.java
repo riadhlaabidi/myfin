@@ -21,7 +21,7 @@ import tn.riadh.myfin.sale.domain.SaleStatus;
 import tn.riadh.myfin.sale.domain.StoreId;
 import tn.riadh.myfin.sale.domain.TerminalId;
 import tn.riadh.myfin.shared.quantity.Quantity;
-import tn.riadh.myfin.shared.quantity.Unit;
+import tn.riadh.myfin.shared.quantity.UnitType;
 
 class SaleResultSetExtractor implements ResultSetExtractor<Sale> {
 
@@ -48,7 +48,7 @@ class SaleResultSetExtractor implements ResultSetExtractor<Sale> {
             if (saleLineId != null) {
                 SaleLineId id = SaleLineId.from(rs.getString("sale_line_id"));
                 ProductId productId = ProductId.from(rs.getString("product_id"));
-                Quantity quantity = Quantity.of(rs.getBigDecimal("quantity"), Unit.valueOf(rs.getString("unit")));
+                Quantity quantity = Quantity.of(rs.getBigDecimal("quantity"), UnitType.valueOf(rs.getString("unit")));
                 SaleLine line = SaleLine.reconstitute(id, saleSnapshot.getId(), productId, quantity);
                 lines.add(line);
             }

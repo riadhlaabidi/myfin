@@ -20,7 +20,7 @@ import tn.riadh.myfin.sale.domain.SaleId;
 import tn.riadh.myfin.sale.domain.StoreId;
 import tn.riadh.myfin.sale.domain.TerminalId;
 import tn.riadh.myfin.shared.quantity.Quantity;
-import tn.riadh.myfin.shared.quantity.Unit;
+import tn.riadh.myfin.shared.quantity.UnitType;
 
 @RestController
 @RequestMapping("/api/sales")
@@ -57,7 +57,7 @@ final class SaleController {
     ResponseEntity<Sale> addLine(@PathVariable final String saleId, @RequestBody final AddSaleLineCommand command) {
         SaleId id = SaleId.from(saleId);
         ProductId productId = ProductId.from(command.getProductId());
-        Quantity quantity = Quantity.of(new BigDecimal(command.getQuantity()), Unit.valueOf(command.getUnit()));
+        Quantity quantity = Quantity.of(new BigDecimal(command.getQuantity()), UnitType.valueOf(command.getUnit()));
         Sale sale = addSaleLineService.addSaleLine(id, productId, quantity);
         return ResponseEntity.ok(sale);
     }
