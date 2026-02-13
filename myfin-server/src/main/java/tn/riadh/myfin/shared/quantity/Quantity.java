@@ -10,13 +10,16 @@ public final class Quantity implements ValueObject {
     private final UnitType unit;
 
     private Quantity(BigDecimal amount, UnitType unit) {
-        if (amount == null) {
-            throw new IllegalArgumentException("amount cannot be null");
+        Objects.requireNonNull(amount, "amount cannot be null");
+        Objects.requireNonNull(unit, "unit cannot be null");
+
+        BigDecimal normalized = amount.stripTrailingZeros();
+        if (normalized.scale() > unit.scale()) {
+            throw new IllegalArgumentException(
+                    "Fraction digits exceed allowed precision for unit " + unit.displayName());
         }
-        if (unit == null) {
-            throw new IllegalArgumentException("unit cannot be null");
-        }
-        this.amount = amount;
+
+        this.amount = normalized.setScale(unit.scale());
         this.unit = unit;
     }
 
