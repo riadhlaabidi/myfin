@@ -1,12 +1,12 @@
 package tn.riadh.myfin.shared.quantity;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class QuantityTest {
 
@@ -51,7 +51,7 @@ public class QuantityTest {
     }
 
     @Test
-    public void shouldMaintainEqualiy() {
+    public void shouldMaintainEquality() {
         Quantity kilo1 = Quantity.of(new BigDecimal("1.5"), UnitType.KILOGRAM);
         Quantity kilo2 = Quantity.of(new BigDecimal("1.500"), UnitType.KILOGRAM);
 
