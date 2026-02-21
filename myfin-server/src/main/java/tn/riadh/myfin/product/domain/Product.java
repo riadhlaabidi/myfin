@@ -16,21 +16,19 @@ public final class Product implements AggregateRoot<Product, ProductId> {
     private final UnitType baseUnit;
     private Set<SellableForm> sellableForms;
 
-    private Product(ProductId id, Barcode barcode, ProductStatus status, UnitType baseUnit,
-            Set<SellableForm> sellableForms) {
+    private Product(ProductId id, ProductStatus status, UnitType baseUnit, Set<SellableForm> sellableForms) {
         Objects.requireNonNull(id, "ProductId cannot be null");
-        Objects.requireNonNull(barcode, "Barcode cannot be null");
         Objects.requireNonNull(baseUnit, "baseUnit cannot be null");
+        Objects.requireNonNull(sellableForms, "sellableForms cannot be null");
         this.id = id;
         this.status = status;
         this.baseUnit = baseUnit;
         this.sellableForms = sellableForms;
     }
 
-    public static Product create(String barcode, UnitType baseUnit) {
+    public static Product create(UnitType baseUnit) {
         return new Product(
                 ProductId.generate(),
-                Barcode.from(barcode),
                 ProductStatus.ACTIVE,
                 baseUnit,
                 new HashSet<>());
