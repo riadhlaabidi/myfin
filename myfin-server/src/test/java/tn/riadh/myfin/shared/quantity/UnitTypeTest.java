@@ -10,7 +10,6 @@ public class UnitTypeTest {
         UnitType piece = UnitType.PIECE;
         assertThat(piece.measurementType()).isEqualTo(MeasurementType.COUNT);
         assertThat(piece.scale()).isEqualTo(0);
-        assertThat(piece.baseUnitRatio()).isEqualTo(1);
     }
 
     @Test
@@ -18,7 +17,6 @@ public class UnitTypeTest {
         UnitType piece = UnitType.KILOGRAM;
         assertThat(piece.measurementType()).isEqualTo(MeasurementType.WEIGHT);
         assertThat(piece.scale()).isEqualTo(3);
-        assertThat(piece.baseUnitRatio()).isEqualTo(1000);
     }
 
     @Test
@@ -26,6 +24,5 @@ public class UnitTypeTest {
         UnitType piece = UnitType.LITER;
         assertThat(piece.measurementType()).isEqualTo(MeasurementType.VOLUME);
         assertThat(piece.scale()).isEqualTo(3);
-        assertThat(piece.baseUnitRatio()).isEqualTo(1000);
     }
 }

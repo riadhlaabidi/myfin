@@ -1,36 +1,58 @@
 package tn.riadh.myfin.product.domain;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import org.jmolecules.ddd.types.AggregateRoot;
+
 import tn.riadh.myfin.shared.quantity.UnitType;
 
-public final class Product {
+public final class Product implements AggregateRoot<Product, ProductId> {
     private final ProductId id;
-    private final Barcode barcode;
     private ProductStatus status;
-    private final UnitType unit;
+    private final UnitType baseUnit;
+    private Set<SellableForm> sellableForms;
 
-    private Product(ProductId id, Barcode barcode, ProductStatus status, UnitType unit) {
-        if (id == null) {
-            throw new IllegalArgumentException("ProductId cannot be null");
-        }
-        if (barcode == null) {
-            throw new IllegalArgumentException("Barcode cannot be null");
-        }
+    private Product(ProductId id, Barcode barcode, ProductStatus status, UnitType baseUnit,
+            Set<SellableForm> sellableForms) {
+        Objects.requireNonNull(id, "ProductId cannot be null");
+        Objects.requireNonNull(barcode, "Barcode cannot be null");
+        Objects.requireNonNull(baseUnit, "baseUnit cannot be null");
         this.id = id;
-        this.barcode = barcode;
         this.status = status;
-        this.unit = unit;
+        this.baseUnit = baseUnit;
+        this.sellableForms = sellableForms;
     }
 
-    public static Product create(String barcode, UnitType unit) {
-        return new Product(ProductId.generate(), Barcode.from(barcode), ProductStatus.ACTIVE, unit);
+    public static Product create(String barcode, UnitType baseUnit) {
+        return new Product(
+                ProductId.generate(),
+                Barcode.from(barcode),
+                ProductStatus.ACTIVE,
+                baseUnit,
+                new HashSet<>());
     }
 
-    public ProductId id() {
+    public void addSellableForm(String name, BigDecimal conversionFactor, Optional<Barcode> barcode) {
+        boolean existsByName = sellableForms.stream().anyMatch(sf -> sf.name().equalsIgnoreCase(name));
+        if (existsByName) {
+            throw new IllegalArgumentException(
+                    "A sellable form with name '" + name + "' already exists for this product");
+        }
+
+        SellableForm sellableForm = SellableForm.create(id, name, conversionFactor, barcode);
+        sellableForms.add(sellableForm);
+    }
+
+    public void removeSellableForm(SellableFormId id) {
+    }
+
+    @Override
+    public ProductId getId() {
         return id;
-    }
-
-    public Barcode barcode() {
-        return barcode;
     }
 
     public ProductStatus status() {
@@ -38,7 +60,7 @@ public final class Product {
     }
 
     public UnitType unit() {
-        return unit;
+        return baseUnit;
     }
 
     @Override

@@ -5,28 +5,25 @@ import java.util.UUID;
 
 import org.jmolecules.ddd.types.Identifier;
 
-public final class ProductId implements Identifier {
+public class SellableFormId implements Identifier {
+
     private final UUID value;
 
-    private ProductId(final UUID value) {
-        Objects.requireNonNull(value, "ProductId cannot be null");
+    private SellableFormId(UUID value) {
+        Objects.requireNonNull(value, "SellableFormId cannot be null");
         this.value = value;
+    }
+
+    public static SellableFormId generate() {
+        return new SellableFormId(UUID.randomUUID());
+    }
+
+    public static SellableFormId from(String uuid) {
+        return new SellableFormId(UUID.fromString(uuid));
     }
 
     public UUID value() {
         return value;
-    }
-
-    public static ProductId of(UUID uuid) {
-        return new ProductId(uuid);
-    }
-
-    public static ProductId from(String uuid) {
-        return new ProductId(UUID.fromString(uuid));
-    }
-
-    public static ProductId generate() {
-        return new ProductId(UUID.randomUUID());
     }
 
     @Override
@@ -34,10 +31,10 @@ public final class ProductId implements Identifier {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof ProductId)) {
+        if (!(obj instanceof SellableFormId)) {
             return false;
         }
-        ProductId other = (ProductId) obj;
+        SellableFormId other = (SellableFormId) obj;
         return value.equals(other.value);
     }
 
