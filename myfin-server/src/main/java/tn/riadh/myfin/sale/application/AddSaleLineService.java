@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import tn.riadh.myfin.product.domain.ProductId;
+import tn.riadh.myfin.product.domain.SellableFormId;
 import tn.riadh.myfin.sale.domain.Sale;
 import tn.riadh.myfin.sale.domain.SaleId;
 import tn.riadh.myfin.sale.domain.SaleLine;
@@ -23,11 +23,11 @@ public class AddSaleLineService {
     }
 
     @Transactional
-    public Sale addSaleLine(final SaleId saleId, final ProductId productId, final Quantity quantity) {
+    public Sale addSaleLine(final SaleId saleId, final SellableFormId sellableFormId, final Quantity quantity) {
         Sale sale = saleRepository
                 .findById(saleId)
                 .orElseThrow(() -> SaleNotFoundException.byId(saleId));
-        SaleLine line = SaleLine.create(saleId, productId, quantity);
+        SaleLine line = SaleLine.create(saleId, sellableFormId, quantity);
         sale.addLine(line);
 
         saleRepository.save(sale);

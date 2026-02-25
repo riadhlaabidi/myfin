@@ -10,4 +10,7 @@ public class ProductNotFoundException extends RuntimeException {
         return new ProductNotFoundException("Product with id " + productId.value() + " was not found");
     }
 
+    public static ProductNotFoundException byBarcode(Barcode barcode) {
+        return new ProductNotFoundException("Product with barcode " + barcode.value() + " was not found");
+    }
 }

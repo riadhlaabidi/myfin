@@ -6,4 +6,6 @@ public interface ProductRepository {
     void save(Product product);
 
     Optional<Product> findById(ProductId productId);
+
+    Optional<Product> findByBarcode(Barcode barcode);
 }

@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.jmolecules.ddd.types.Identifier;
 
 public final class ProductId implements Identifier {
+
     private final UUID value;
 
     private ProductId(final UUID value) {

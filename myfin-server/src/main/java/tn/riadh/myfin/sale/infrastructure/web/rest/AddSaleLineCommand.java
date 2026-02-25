@@ -3,16 +3,16 @@ package tn.riadh.myfin.sale.infrastructure.web.rest;
 import java.io.Serializable;
 
 final class AddSaleLineCommand implements Serializable {
-    private String productId;
+    private String sellableFormId;
     private String quantity;
     private String unit;
 
-    public String getProductId() {
-        return productId;
+    public String getSellableFormId() {
+        return sellableFormId;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setSellableFormId(String sellableFormId) {
+        this.sellableFormId = sellableFormId;
     }
 
     public String getQuantity() {

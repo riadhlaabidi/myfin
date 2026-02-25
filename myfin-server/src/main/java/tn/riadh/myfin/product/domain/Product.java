@@ -11,24 +11,33 @@ import org.jmolecules.ddd.types.AggregateRoot;
 import tn.riadh.myfin.shared.quantity.UnitType;
 
 public final class Product implements AggregateRoot<Product, ProductId> {
+
     private final ProductId id;
+    private final ProductName name;
     private ProductStatus status;
     private final UnitType baseUnit;
-    private Set<SellableForm> sellableForms;
+    private final Set<SellableForm> sellableForms;
 
-    private Product(ProductId id, ProductStatus status, UnitType baseUnit, Set<SellableForm> sellableForms) {
+    private Product(final ProductId id,
+            final ProductName name,
+            final ProductStatus status,
+            final UnitType baseUnit,
+            final Set<SellableForm> sellableForms) {
         Objects.requireNonNull(id, "ProductId cannot be null");
+        Objects.requireNonNull(name, "ProductName cannot be null");
         Objects.requireNonNull(baseUnit, "baseUnit cannot be null");
         Objects.requireNonNull(sellableForms, "sellableForms cannot be null");
         this.id = id;
+        this.name = name;
         this.status = status;
         this.baseUnit = baseUnit;
         this.sellableForms = sellableForms;
     }
 
-    public static Product create(UnitType baseUnit) {
+    public static Product create(String name, UnitType baseUnit) {
         return new Product(
                 ProductId.generate(),
+                ProductName.of(name),
                 ProductStatus.ACTIVE,
                 baseUnit,
                 new HashSet<>());
@@ -45,12 +54,13 @@ public final class Product implements AggregateRoot<Product, ProductId> {
         sellableForms.add(sellableForm);
     }
 
-    public void removeSellableForm(SellableFormId id) {
-    }
-
     @Override
     public ProductId getId() {
         return id;
+    }
+
+    public ProductName name() {
+        return name;
     }
 
     public ProductStatus status() {
