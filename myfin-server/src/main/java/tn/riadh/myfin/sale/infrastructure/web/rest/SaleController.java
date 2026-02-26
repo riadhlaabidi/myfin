@@ -56,7 +56,7 @@ final class SaleController {
     @PostMapping("/{saleId}/lines")
     ResponseEntity<Sale> addLine(@PathVariable final String saleId, @RequestBody final AddSaleLineCommand command) {
         SaleId id = SaleId.from(saleId);
-        ProductId productId = ProductId.from(command.getProductId());
+        ProductId productId = ProductId.from(command.getSellableFormId());
         Quantity quantity = Quantity.of(new BigDecimal(command.getQuantity()), UnitType.valueOf(command.getUnit()));
         Sale sale = addSaleLineService.addSaleLine(id, productId, quantity);
         return ResponseEntity.ok(sale);

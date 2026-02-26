@@ -1,0 +1,61 @@
+Product was created
+Product was discontinued
+Product was out of stock
+Product info was updated
+
+Product sellable form was added
+Product sellable form was removed 
+Product sellable form was updated 
+
+Price was updated
+
+Item was scanned
+Item was added to sale
+Item was removed from sale
+Item quantity was updated inside the sale
+
+
+Sale was opened
+Sale was voided (stopped, mind change, aborted)
+Sale was completed
+
+Sale Item was returned
+Sale Item was swapped
+Sale Item swapping difference was payed
+Sale Item swapping difference was refunded
+Sale Item swapping difference was recorded as debt
+Sale Item return was fully refunded 
+
+Promotion was created
+Promotion was updated
+Promotion was ended
+Discount was applied
+
+Payment was received
+Payment was recorded as debt for the customer
+
+Debt was calculated for the customer
+Debt payment was received
+Debt partial payment was received
+Customer debt was fully settled 
+
+Cash was counted
+Change was calculated
+Change was returned to customer
+Change was kept and deducted from customer's debt
+Change was kept as debt for the store to be collected later by the customer
+Kept Change was available and collected later by the customer
+
+Receipt was printed
+Receipt was skipped
+
+Stock was reserved to the current sale
+Stock was depleted
+Stock was replenished
+
+Supply was payed
+Supply was recorded as debt for the store
+Supply debt was fully settled with the supplier
+
+Shift was opened
+Shift was closed
