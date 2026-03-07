@@ -43,14 +43,15 @@ public final class Product implements AggregateRoot<Product, ProductId> {
                 new HashSet<>());
     }
 
-    public void addSellableForm(String name, BigDecimal conversionFactor, Optional<Barcode> barcode) {
-        boolean existsByName = sellableForms.stream().anyMatch(sf -> sf.name().equalsIgnoreCase(name));
-        if (existsByName) {
-            throw new IllegalArgumentException(
-                    "A sellable form with name '" + name + "' already exists for this product");
+    public void addSellableForm(FormLabel formLabel, BigDecimal conversionFactor, Optional<Barcode> barcode) {
+        boolean exists = sellableForms.stream()
+                .anyMatch(sf -> sf.formLabel() == formLabel && sf.conversionFactor() == conversionFactor);
+        if (exists) {
+            throw new IllegalArgumentException("A sellable form with label '" + formLabel.displayName()
+                    + "' and conversion factor " + conversionFactor + " already exists for this product");
         }
 
-        SellableForm sellableForm = SellableForm.create(id, name, conversionFactor, barcode);
+        SellableForm sellableForm = SellableForm.create(id, formLabel, conversionFactor, barcode);
         sellableForms.add(sellableForm);
     }
 

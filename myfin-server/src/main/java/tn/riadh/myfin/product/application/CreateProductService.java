@@ -20,6 +20,5 @@ public class CreateProductService {
     }
 
     public void createProduct(ProductName productName, UnitType baseUnit, Set<SellableForm> sellablesForms) {
-        Product product = Product.create(name, baseUnit);
     }
 }

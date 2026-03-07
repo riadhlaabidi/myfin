@@ -10,21 +10,16 @@ public class SellableForm implements Entity<Product, SellableFormId> {
 
     private final SellableFormId id;
     private final ProductId productId;
-    private final String name;
+    private final FormLabel formLabel;
     private final BigDecimal conversionFactor;
     private final Optional<Barcode> barcode;
 
-    private SellableForm(SellableFormId id, ProductId productId, String name, BigDecimal conversionFactor,
+    private SellableForm(SellableFormId id, ProductId productId, FormLabel formLabel, BigDecimal conversionFactor,
             Optional<Barcode> barcode) {
         Objects.requireNonNull(id, "SellableFormId cannot be null");
         Objects.requireNonNull(productId, "ProductId cannot be null");
-        Objects.requireNonNull(name, "name cannot be null");
         Objects.requireNonNull(conversionFactor, "conversionFactor cannot be null");
         Objects.requireNonNull(barcode, "Barcode optional cannot be null");
-
-        if (name.isBlank()) {
-            throw new IllegalArgumentException("name cannot be empty");
-        }
 
         if (conversionFactor.compareTo(BigDecimal.ONE) < 0) {
             throw new IllegalArgumentException("conversionFactor should be greater than 0");
@@ -32,14 +27,14 @@ public class SellableForm implements Entity<Product, SellableFormId> {
 
         this.id = id;
         this.productId = productId;
-        this.name = name;
+        this.formLabel = formLabel;
         this.conversionFactor = conversionFactor;
         this.barcode = barcode;
     }
 
-    public static SellableForm create(ProductId productId, String name, BigDecimal conversionFactor,
+    public static SellableForm create(ProductId productId, FormLabel formLabel, BigDecimal conversionFactor,
             Optional<Barcode> barcode) {
-        return new SellableForm(SellableFormId.generate(), productId, name, conversionFactor, barcode);
+        return new SellableForm(SellableFormId.generate(), productId, formLabel, conversionFactor, barcode);
     }
 
     @Override
@@ -51,8 +46,8 @@ public class SellableForm implements Entity<Product, SellableFormId> {
         return productId;
     }
 
-    public String name() {
-        return name;
+    public FormLabel formLabel() {
+        return formLabel;
     }
 
     public BigDecimal conversionFactor() {
