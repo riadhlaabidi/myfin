@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 
-import tn.riadh.myfin.product.domain.ProductId;
+import tn.riadh.myfin.product.domain.SellableFormId;
 import tn.riadh.myfin.shared.quantity.Quantity;
 import tn.riadh.myfin.shared.quantity.UnitType;
 
@@ -22,7 +22,7 @@ public class SaleTests {
     @Test
     public void shouldEmitSaleLineAddedWhenAddingSaleLine() {
         Sale sale = Sale.start(StoreId.generate(), TerminalId.generate(), OperatorId.generate());
-        SaleLine line = SaleLine.create(sale.getId(), ProductId.generate(),
+        SaleLine line = SaleLine.create(sale.getId(), SellableFormId.generate(),
                 Quantity.of(new BigDecimal("1"), UnitType.PIECE));
         sale.addLine(line);
         assertThat(sale.getDomainEvents()).hasSize(2);

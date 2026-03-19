@@ -2,8 +2,7 @@ package tn.riadh.myfin.product.domain;
 
 enum ProductStatus {
     ACTIVE("Active"),
-    DISCONTINUED("Discontinued"),
-    OUT_OF_STOCK("Out of Stock");
+    DISCONTINUED("Discontinued");
 
     private final String displayName;
 

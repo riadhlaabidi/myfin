@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import tn.riadh.myfin.product.domain.ProductId;
+import tn.riadh.myfin.product.domain.SellableFormId;
 import tn.riadh.myfin.sale.application.AddSaleLineService;
 import tn.riadh.myfin.sale.application.FinalizeSaleService;
 import tn.riadh.myfin.sale.application.StartSaleService;
@@ -56,9 +57,9 @@ final class SaleController {
     @PostMapping("/{saleId}/lines")
     ResponseEntity<Sale> addLine(@PathVariable final String saleId, @RequestBody final AddSaleLineCommand command) {
         SaleId id = SaleId.from(saleId);
-        ProductId productId = ProductId.from(command.getSellableFormId());
+        SellableFormId sellableFormId = SellableFormId.from(command.getSellableFormId());
         Quantity quantity = Quantity.of(new BigDecimal(command.getQuantity()), UnitType.valueOf(command.getUnit()));
-        Sale sale = addSaleLineService.addSaleLine(id, productId, quantity);
+        Sale sale = addSaleLineService.addSaleLine(id, sellableFormId, quantity);
         return ResponseEntity.ok(sale);
     }
 

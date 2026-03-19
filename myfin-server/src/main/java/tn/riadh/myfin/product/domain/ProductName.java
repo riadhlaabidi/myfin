@@ -8,7 +8,7 @@ public final class ProductName implements ValueObject {
 
     private final String value;
 
-    private static final int MAX_LENGTH = 255;
+    private static final int MAX_LENGTH = 100;
 
     private ProductName(String value) {
         Objects.requireNonNull(value, "ProductName cannot be null");
@@ -16,7 +16,7 @@ public final class ProductName implements ValueObject {
             throw new IllegalArgumentException("ProductName cannot be empty");
         }
         if (value.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("ProductName should not exceed 255 characters");
+            throw new IllegalArgumentException("ProductName should not exceed " + MAX_LENGTH + " characters");
         }
         this.value = value;
     }

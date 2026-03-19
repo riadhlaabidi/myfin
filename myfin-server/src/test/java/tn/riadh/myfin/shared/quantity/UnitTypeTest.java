@@ -18,11 +18,4 @@ public class UnitTypeTest {
         assertThat(piece.measurementType()).isEqualTo(MeasurementType.WEIGHT);
         assertThat(piece.scale()).isEqualTo(3);
     }
-
-    @Test
-    public void shouldDefineCorrectSemanticsForLiter() {
-        UnitType piece = UnitType.LITER;
-        assertThat(piece.measurementType()).isEqualTo(MeasurementType.VOLUME);
-        assertThat(piece.scale()).isEqualTo(3);
-    }
 }

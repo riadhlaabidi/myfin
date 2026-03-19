@@ -109,8 +109,8 @@ public class SaleJdbcRepository implements SaleRepository {
         }
 
         String sql = """
-                INSERT INTO sale_lines(id, sale_id, product_id, quantity, unit)
-                VALUES(:id, :sale_id, :product_id, :quantity, :unit)
+                INSERT INTO sale_lines(id, sale_id, sellable_form_id, quantity, unit)
+                VALUES(:id, :sale_id, :sellable_form, :quantity, :unit)
                 """;
         int linesCount = lines.size();
         SqlParameterSource[] params = new MapSqlParameterSource[linesCount];
@@ -119,7 +119,7 @@ public class SaleJdbcRepository implements SaleRepository {
             params[i] = new MapSqlParameterSource()
                     .addValue("id", lines.get(i).getId().value())
                     .addValue("sale_id", saleId.value())
-                    .addValue("product_id", lines.get(i).productId().value())
+                    .addValue("sellable_form_id", lines.get(i).sellableFormId().value())
                     .addValue("quantity", lines.get(i).quantity().amount())
                     .addValue("unit", lines.get(i).quantity().unit().toString());
         }

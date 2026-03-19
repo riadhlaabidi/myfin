@@ -1,9 +1,11 @@
 package tn.riadh.myfin.product.domain;
 
-public class ProductNotFoundException extends RuntimeException {
+import tn.riadh.myfin.shared.domain.DomainException;
 
-    public ProductNotFoundException(String message) {
-        super(message);
+public class ProductNotFoundException extends DomainException {
+
+    private ProductNotFoundException(String message) {
+        super("PRODUCT_NOT_FOUND", message);
     }
 
     public static ProductNotFoundException byId(ProductId productId) {

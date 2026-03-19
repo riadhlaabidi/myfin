@@ -16,10 +16,6 @@ public class QuantityTest {
         assertThat(kilo.amount().scale()).isEqualTo(UnitType.KILOGRAM.scale());
         assertThat(kilo.amount()).isEqualByComparingTo("3.000");
 
-        Quantity liter = assertDoesNotThrow(() -> Quantity.of(new BigDecimal("1"), UnitType.LITER));
-        assertThat(liter.amount().scale()).isEqualTo(UnitType.LITER.scale());
-        assertThat(liter.amount()).isEqualByComparingTo("1.000");
-
         kilo = assertDoesNotThrow(() -> Quantity.of(new BigDecimal("1.9"), UnitType.KILOGRAM));
         assertThat(kilo.amount().scale()).isEqualTo(UnitType.KILOGRAM.scale());
         assertThat(kilo.amount()).isEqualByComparingTo("1.900");
@@ -31,8 +27,6 @@ public class QuantityTest {
                 .isThrownBy(() -> Quantity.of(new BigDecimal("1.5"), UnitType.PIECE));
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> Quantity.of(new BigDecimal("1.0001"), UnitType.KILOGRAM));
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> Quantity.of(new BigDecimal("2.00005"), UnitType.LITER));
     }
 
     @Test
@@ -44,10 +38,6 @@ public class QuantityTest {
         Quantity kilo = assertDoesNotThrow(() -> Quantity.of(new BigDecimal("1.17500"), UnitType.KILOGRAM));
         assertThat(kilo.amount().scale()).isEqualTo(UnitType.KILOGRAM.scale());
         assertThat(kilo.amount()).isEqualByComparingTo("1.175");
-
-        Quantity liter = assertDoesNotThrow(() -> Quantity.of(new BigDecimal("1.1010"), UnitType.LITER));
-        assertThat(liter.amount().scale()).isEqualTo(UnitType.LITER.scale());
-        assertThat(liter.amount()).isEqualByComparingTo("1.101");
     }
 
     @Test

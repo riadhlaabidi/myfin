@@ -1,40 +1,57 @@
 package tn.riadh.myfin.product.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.jmolecules.ddd.types.Entity;
 
+/**
+ * A SellableForm represents a specific way a {@link Product} can be sold,
+ * defined as a quantity of the product's base unit.
+ * 
+ * <p>
+ * Examples:
+ * <ul>
+ * <li>A single can of "Soda" is a SellableForm with a quantity of 1 base unit,
+ * identified by its own {@link Barcode}.</li>
+ * <li>A pack of 6 cans is another SellableForm with a quantity of 6 base units,
+ * identified by a different {@link Barcode}</li>
+ * </ul>
+ *
+ * <p>
+ * Pricing is not part of the SellableForm, instead it is managed externally via
+ * a {@link PriceRecord}, which references a SellableForm by its identity.
+ *
+ * <p>
+ * A SellableForm of a Product may or may not have an identifying
+ * {@link Barcode}. The accessor returns an {@link Optional} to enforce callers
+ * to handle its absence explicitly.
+ *
+ * <p>
+ * A SellableForm is an entity managed by the {@link Product} aggregate root.
+ */
 public class SellableForm implements Entity<Product, SellableFormId> {
-
     private final SellableFormId id;
-    private final ProductId productId;
     private final FormLabel formLabel;
-    private final BigDecimal conversionFactor;
-    private final Optional<Barcode> barcode;
+    private final Integer quantity;
+    private final Barcode barcode;
 
-    private SellableForm(SellableFormId id, ProductId productId, FormLabel formLabel, BigDecimal conversionFactor,
-            Optional<Barcode> barcode) {
+    private SellableForm(SellableFormId id, FormLabel formLabel, Integer quantity, Barcode barcode) {
         Objects.requireNonNull(id, "SellableFormId cannot be null");
-        Objects.requireNonNull(productId, "ProductId cannot be null");
-        Objects.requireNonNull(conversionFactor, "conversionFactor cannot be null");
-        Objects.requireNonNull(barcode, "Barcode optional cannot be null");
 
-        if (conversionFactor.compareTo(BigDecimal.ONE) < 0) {
-            throw new IllegalArgumentException("conversionFactor should be greater than 0");
+        if (quantity != null && quantity < 1) {
+            throw new IllegalArgumentException("quantity should be greater than 0");
         }
 
         this.id = id;
-        this.productId = productId;
         this.formLabel = formLabel;
-        this.conversionFactor = conversionFactor;
+        this.quantity = quantity;
         this.barcode = barcode;
     }
 
-    public static SellableForm create(ProductId productId, FormLabel formLabel, BigDecimal conversionFactor,
-            Optional<Barcode> barcode) {
-        return new SellableForm(SellableFormId.generate(), productId, formLabel, conversionFactor, barcode);
+    public static SellableForm create(FormLabel formLabel, Integer conversionFactor, Barcode barcode) {
+        return new SellableForm(SellableFormId.generate(), formLabel, conversionFactor, barcode);
     }
 
     @Override
@@ -42,20 +59,22 @@ public class SellableForm implements Entity<Product, SellableFormId> {
         return id;
     }
 
-    public ProductId productId() {
-        return productId;
-    }
-
     public FormLabel formLabel() {
         return formLabel;
     }
 
-    public BigDecimal conversionFactor() {
-        return conversionFactor;
+    public OptionalInt quantity() {
+        if (quantity == null) {
+            return OptionalInt.empty();
+        }
+        return OptionalInt.of(quantity);
     }
 
     public Optional<Barcode> barcode() {
-        return barcode;
+        if (barcode == null) {
+            return Optional.empty();
+        }
+        return Optional.of(barcode);
     }
 
     @Override

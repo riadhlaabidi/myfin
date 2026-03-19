@@ -11,7 +11,7 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import tn.riadh.myfin.product.domain.ProductId;
+import tn.riadh.myfin.product.domain.SellableFormId;
 import tn.riadh.myfin.sale.domain.OperatorId;
 import tn.riadh.myfin.sale.domain.Sale;
 import tn.riadh.myfin.sale.domain.SaleId;
@@ -47,9 +47,9 @@ class SaleResultSetExtractor implements ResultSetExtractor<Sale> {
             String saleLineId = rs.getString("sale_line_id");
             if (saleLineId != null) {
                 SaleLineId id = SaleLineId.from(rs.getString("sale_line_id"));
-                ProductId productId = ProductId.from(rs.getString("product_id"));
+                SellableFormId sellableFormId = SellableFormId.from(rs.getString("sellable_form_id"));
                 Quantity quantity = Quantity.of(rs.getBigDecimal("quantity"), UnitType.valueOf(rs.getString("unit")));
-                SaleLine line = SaleLine.reconstitute(id, saleSnapshot.getId(), productId, quantity);
+                SaleLine line = SaleLine.reconstitute(id, saleSnapshot.getId(), sellableFormId, quantity);
                 lines.add(line);
             }
         }

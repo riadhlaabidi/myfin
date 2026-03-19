@@ -4,8 +4,7 @@ import org.jmolecules.ddd.types.ValueObject;
 
 public enum UnitType implements ValueObject {
     PIECE("Piece", "P", MeasurementType.COUNT, 0),
-    KILOGRAM("Kilogram", "KG", MeasurementType.WEIGHT, 3),
-    LITER("Liter", "L", MeasurementType.VOLUME, 3);
+    KILOGRAM("Kilogram", "KG", MeasurementType.WEIGHT, 3);
 
     private String displayName;
     private String symbol;
@@ -34,5 +33,13 @@ public enum UnitType implements ValueObject {
 
     public int scale() {
         return scale;
+    }
+
+    public boolean isCountable() {
+        return measurementType == MeasurementType.COUNT;
+    }
+
+    public boolean isWeighable() {
+        return measurementType == MeasurementType.WEIGHT;
     }
 }
