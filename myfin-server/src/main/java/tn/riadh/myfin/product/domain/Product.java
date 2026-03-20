@@ -69,7 +69,7 @@ public final class Product implements AggregateRoot<Product, ProductId> {
                     && sf.quantity().getAsInt() == quantity
                     && sf.barcode().isPresent()
                     && sf.barcode().get().equals(barcode)) {
-                throw new SellableFormAlreadyExistException("SellableForm already exists");
+                throw new SellableFormAlreadyExistsException("SellableForm already exists");
             }
         }
         SellableForm sellableForm = SellableForm.create(formLabel, quantity, barcode);
