@@ -9,7 +9,7 @@ import tn.riadh.myfin.product.domain.Product;
 import tn.riadh.myfin.product.domain.ProductName;
 import tn.riadh.myfin.product.domain.ProductRepository;
 import tn.riadh.myfin.product.domain.SellableForm;
-import tn.riadh.myfin.shared.quantity.UnitType;
+import tn.riadh.myfin.shared.quantity.UnitOfMesure;
 
 public class CreateProductService {
     private final Logger logger = LoggerFactory.getLogger(CreateProductService.class);
@@ -19,6 +19,6 @@ public class CreateProductService {
         this.productRepository = productRepository;
     }
 
-    public void createProduct(ProductName productName, UnitType baseUnit, Set<SellableForm> sellablesForms) {
+    public void createProduct(ProductName productName, UnitOfMesure baseUnit, Set<SellableForm> sellablesForms) {
     }
 }

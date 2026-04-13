@@ -7,5 +7,4 @@ public class BarcodeAlreadyExistsException extends DomainException {
     public BarcodeAlreadyExistsException(Barcode barcode) {
         super("BARCODE_ALREADY_EXISTS", "Barcode '" + barcode.toString() + "' already exists");
     }
-
 }

@@ -7,9 +7,9 @@ import org.jmolecules.ddd.types.ValueObject;
 
 public final class Quantity implements ValueObject {
     private final BigDecimal amount;
-    private final UnitType unit;
+    private final UnitOfMesure unit;
 
-    private Quantity(BigDecimal amount, UnitType unit) {
+    private Quantity(BigDecimal amount, UnitOfMesure unit) {
         Objects.requireNonNull(amount, "amount cannot be null");
         Objects.requireNonNull(unit, "unit cannot be null");
 
@@ -23,7 +23,7 @@ public final class Quantity implements ValueObject {
         this.unit = unit;
     }
 
-    public static Quantity of(BigDecimal amount, UnitType unit) {
+    public static Quantity of(BigDecimal amount, UnitOfMesure unit) {
         return new Quantity(amount, unit);
     }
 
@@ -35,7 +35,7 @@ public final class Quantity implements ValueObject {
         return amount;
     }
 
-    public UnitType unit() {
+    public UnitOfMesure unit() {
         return unit;
     }
 

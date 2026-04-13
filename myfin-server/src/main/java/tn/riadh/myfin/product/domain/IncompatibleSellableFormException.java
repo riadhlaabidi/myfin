@@ -9,7 +9,7 @@ public class IncompatibleSellableFormException extends DomainException {
     }
 
     public static IncompatibleSellableFormException weighable() {
-        return new IncompatibleSellableFormException("Cannot define a sellable form quantity for a weighable product");
+        return new IncompatibleSellableFormException("Cannot add a sellable form for a weighable product");
     }
 
     public static IncompatibleSellableFormException countable() {
