@@ -2,7 +2,7 @@ package tn.riadh.myfin.shared.quantity;
 
 import org.jmolecules.ddd.types.ValueObject;
 
-public enum UnitType implements ValueObject {
+public enum UnitOfMesure implements ValueObject {
     PIECE("Piece", "P", MeasurementType.COUNT, 0),
     KILOGRAM("Kilogram", "KG", MeasurementType.WEIGHT, 3);
 
@@ -11,7 +11,7 @@ public enum UnitType implements ValueObject {
     private MeasurementType measurementType;
     private int scale;
 
-    private UnitType(String displayName, String symbol,
+    private UnitOfMesure(String displayName, String symbol,
             MeasurementType measurementType, int scale) {
         this.displayName = displayName;
         this.symbol = symbol;
