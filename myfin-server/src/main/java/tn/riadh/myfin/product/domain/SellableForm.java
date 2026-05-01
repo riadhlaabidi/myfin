@@ -2,7 +2,6 @@ package tn.riadh.myfin.product.domain;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 import org.jmolecules.ddd.types.Entity;
 
@@ -14,7 +13,7 @@ import org.jmolecules.ddd.types.Entity;
  * Examples:
  * <ul>
  * <li>A single can of "Soda" is a SellableForm with a quantity of 1 base unit,
- * identified by its own {@link Barcode}.</li>
+ * identified by its own {@link Barcode}</li>
  * <li>A pack of 6 cans is another SellableForm with a quantity of 6 base units,
  * identified by a different {@link Barcode}</li>
  * </ul>
@@ -24,34 +23,38 @@ import org.jmolecules.ddd.types.Entity;
  * a {@link PriceRecord}, which references a SellableForm by its identity.
  *
  * <p>
- * A SellableForm of a Product may or may not have an identifying
- * {@link Barcode}. The accessor returns an {@link Optional} to enforce callers
- * to handle its absence explicitly.
- *
+ * A SellableForm of a Product is identified with a {@link Barcode} or a
+ * {@link PluCode}. When neither of these identifier codes are provided, the
+ * form is considered unidentifiable and creation throws an
+ * {@link UnidentifiableSellableFormException}.
+ * 
  * <p>
  * A SellableForm is an entity managed by the {@link Product} aggregate root.
  */
 public class SellableForm implements Entity<Product, SellableFormId> {
     private final SellableFormId id;
     private final FormLabel formLabel;
-    private final Integer quantity;
+    private final Integer baseUnitQuantity;
     private final Barcode barcode;
+    private final PluCode plucode;
 
-    private SellableForm(SellableFormId id, FormLabel formLabel, Integer quantity, Barcode barcode) {
-        Objects.requireNonNull(id, "SellableFormId cannot be null");
+    private SellableForm(Builder builder) {
+        Objects.requireNonNull(builder.id, "SellableFormId cannot be null");
+        Objects.requireNonNull(builder.baseUnitQuantity, "baseUnitQuantity cannot be null");
 
-        if (quantity != null && quantity < 1) {
-            throw new IllegalArgumentException("quantity should be greater than 0");
+        if (builder.barcode == null && builder.plucode == null) {
+            throw new UnidentifiableSellableFormException();
         }
 
-        this.id = id;
-        this.formLabel = formLabel;
-        this.quantity = quantity;
-        this.barcode = barcode;
-    }
+        if (builder.baseUnitQuantity < 1) {
+            throw new IllegalArgumentException("baseUnitQuantity should be greater than 0");
+        }
 
-    public static SellableForm create(FormLabel formLabel, Integer conversionFactor, Barcode barcode) {
-        return new SellableForm(SellableFormId.generate(), formLabel, conversionFactor, barcode);
+        this.id = builder.id;
+        this.formLabel = builder.formLabel;
+        this.baseUnitQuantity = builder.baseUnitQuantity;
+        this.barcode = builder.barcode;
+        this.plucode = builder.plucode;
     }
 
     @Override
@@ -59,22 +62,20 @@ public class SellableForm implements Entity<Product, SellableFormId> {
         return id;
     }
 
-    public FormLabel formLabel() {
-        return formLabel;
+    public Optional<FormLabel> formLabel() {
+        return Optional.ofNullable(formLabel);
     }
 
-    public OptionalInt quantity() {
-        if (quantity == null) {
-            return OptionalInt.empty();
-        }
-        return OptionalInt.of(quantity);
+    public Integer baseUnitQuantity() {
+        return baseUnitQuantity;
     }
 
     public Optional<Barcode> barcode() {
-        if (barcode == null) {
-            return Optional.empty();
-        }
-        return Optional.of(barcode);
+        return Optional.ofNullable(barcode);
+    }
+
+    public Optional<PluCode> plucode() {
+        return Optional.ofNullable(plucode);
     }
 
     @Override
@@ -97,5 +98,45 @@ public class SellableForm implements Entity<Product, SellableFormId> {
     @Override
     public String toString() {
         return id.toString();
+    }
+
+    static class Builder {
+        private final SellableFormId id;
+        private FormLabel formLabel = null;
+        private Integer baseUnitQuantity = 1;
+        private Barcode barcode = null;
+        private PluCode plucode = null;
+
+        Builder() {
+            this.id = SellableFormId.generate();
+        }
+
+        Builder(SellableFormId sellableFormId) {
+            this.id = sellableFormId;
+        }
+
+        Builder formLabel(FormLabel formLabel) {
+            this.formLabel = formLabel;
+            return this;
+        }
+
+        Builder baseUnitQuantity(Integer baseUnitQuantity) {
+            this.baseUnitQuantity = baseUnitQuantity;
+            return this;
+        }
+
+        Builder barcode(Barcode barcode) {
+            this.barcode = barcode;
+            return this;
+        }
+
+        Builder plucode(PluCode plucode) {
+            this.plucode = plucode;
+            return this;
+        }
+
+        SellableForm build() {
+            return new SellableForm(this);
+        }
     }
 }

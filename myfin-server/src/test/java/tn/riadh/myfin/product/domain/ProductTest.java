@@ -2,79 +2,68 @@ package tn.riadh.myfin.product.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import tn.riadh.myfin.shared.quantity.UnitType;
+import tn.riadh.myfin.shared.quantity.UnitOfMesure;
 
-public class ProductTest {
+class ProductTest {
 
     @Test
     public void shouldActivateProductWhenCreated() {
-        List<SellableForm> sellableForms = List.of(SellableForm.create(null, 1, Barcode.from("111")));
-        Product product = Product.create("Product", CategoryId.generate(), UnitType.PIECE, sellableForms);
+        Product product = Product.create("Product", CategoryId.generate(), UnitOfMesure.PIECE, FormLabel.PACK,
+                Barcode.from("111"), null);
         assertThat(product.status()).isEqualTo(ProductStatus.ACTIVE);
     }
 
     @Test
-    public void shouldThrowWhenCreatingAProductWithNoSellableForms() {
-        assertThatExceptionOfType(ProductWithNoSellableFormsException.class)
-                .isThrownBy(() -> Product.create("Product", CategoryId.generate(), UnitType.PIECE, new ArrayList<>()));
+    public void shouldAddBaseUnitSellableFormWhenCreated() {
+        Product product = Product.create("Product", CategoryId.generate(), UnitOfMesure.PIECE, FormLabel.PACK,
+                Barcode.from("111"), null);
+
+        assertThat(product.sellableForms()).hasSize(1);
+
+        var form = product.sellableForms().getFirst();
+        assertThat(form.baseUnitQuantity()).isEqualTo(1);
+        assertThat(form.formLabel()).isPresent().hasValue(FormLabel.PACK);
+        assertThat(form.barcode()).isPresent().hasValue(Barcode.from("111"));
+        assertThat(form.plucode()).isNotPresent();
     }
 
     @Test
-    public void shouldThrowWhenCreatedWithIncompatibleSellableFormQuantityForWeighableProducts() {
-        List<SellableForm> sellableForms = List.of(SellableForm.create(null, 1, Barcode.from("111")));
+    public void shouldThrowWhenAddingSellableFormWithNoBarcodeAndPluCodeToWeighableProduct() {
+        assertThatExceptionOfType(UnidentifiableSellableFormException.class)
+                .isThrownBy(() -> Product.create("Product", CategoryId.generate(), UnitOfMesure.KILOGRAM, null, null,
+                        null));
+    }
+
+    @Test
+    public void shouldThrowWhenAddingSellableFormWithNoBarcodeAndPluCodeToCountableProducts() {
+        assertThatExceptionOfType(UnidentifiableSellableFormException.class)
+                .isThrownBy(() -> Product.create("Product", CategoryId.generate(), UnitOfMesure.PIECE, null,
+                        null, null));
+
+        Product product = Product.create("Product", CategoryId.generate(), UnitOfMesure.PIECE, null,
+                Barcode.from("111"), null);
+        assertThatExceptionOfType(UnidentifiableSellableFormException.class)
+                .isThrownBy(() -> product.addSellableForm(null, 2, null, null));
+    }
+
+    @Test
+    public void shouldThrowWhenAddingSellableFormToWeighableProduct() {
+        Product product = Product.create("Product", CategoryId.generate(), UnitOfMesure.KILOGRAM, null,
+                Barcode.from("111"), null);
+
         assertThatExceptionOfType(IncompatibleSellableFormException.class)
-                .isThrownBy(() -> Product.create("Product", CategoryId.generate(), UnitType.KILOGRAM, sellableForms));
+                .isThrownBy(() -> product.addSellableForm(null, 2, Barcode.from("222"), null));
     }
 
     @Test
-    public void shouldThrowWhenCreatedWithIncompatibleSellableFormQuantityForCountableProducts() {
-        List<SellableForm> sellableForms = List.of(SellableForm.create(null, null, Barcode.from("111")));
-        assertThatExceptionOfType(IncompatibleSellableFormException.class)
-                .isThrownBy(() -> Product.create("Product", CategoryId.generate(), UnitType.PIECE, sellableForms));
-    }
+    public void shouldThrowWhenAddingSellableFormWithExistantBaseUnitQuantity() {
+        Product product = Product.create("Product", CategoryId.generate(), UnitOfMesure.PIECE, FormLabel.PACK,
+                Barcode.from("111"), null);
 
-    @Test
-    public void shouldAddSellableFormCorrectly() {
-        List<SellableForm> sellableForms = List.of(
-                SellableForm.create(FormLabel.PACK, 1, Barcode.from("111")));
-        Product product = Product.create("Product", CategoryId.generate(), UnitType.PIECE, sellableForms);
-
-        assertThatNoException().isThrownBy(() -> product.addSellableForm(FormLabel.PACK, 5, Barcode.from("222")));
-        assertThat(product.sellableForms()).hasSize(2);
-        assertThat(product.sellableForms().get(1).formLabel()).isEqualTo(FormLabel.PACK);
-        assertThat(product.sellableForms().get(1).quantity().getAsInt()).isEqualTo(5);
-        assertThat(product.sellableForms().get(1).barcode().get()).isEqualTo(Barcode.from("222"));
-
-        assertThatNoException().isThrownBy(() -> product.addSellableForm(FormLabel.PACK, 10, Barcode.from("333")));
-        assertThat(product.sellableForms()).hasSize(3);
-        assertThat(product.sellableForms().getLast().formLabel()).isEqualTo(FormLabel.PACK);
-        assertThat(product.sellableForms().getLast().quantity().getAsInt()).isEqualTo(10);
-        assertThat(product.sellableForms().getLast().barcode().get()).isEqualTo(Barcode.from("333"));
-    }
-
-    @Test
-    public void shouldThrowWhenAddingASellableFormWithAnAlreadyExistingBarcode() {
-        List<SellableForm> sellableForms = List.of(
-                SellableForm.create(FormLabel.PACK, 1, Barcode.from("111")));
-        Product product = Product.create("Product", CategoryId.generate(), UnitType.PIECE, sellableForms);
-        assertThatExceptionOfType(BarcodeAlreadyExistsException.class)
-                .isThrownBy(() -> product.addSellableForm(FormLabel.SAC, 2, Barcode.from("111")));
-    }
-
-    @Test
-    public void shouldThrowWhenAddingAnExistingSellableForm() {
-        List<SellableForm> sellableForms = List.of(
-                SellableForm.create(FormLabel.PACK, 1, Barcode.from("111")));
-        Product product = Product.create("Product", CategoryId.generate(), UnitType.PIECE, sellableForms);
         assertThatExceptionOfType(SellableFormAlreadyExistsException.class)
-                .isThrownBy(() -> product.addSellableForm(FormLabel.PACK, 1, Barcode.from("111")));
+                .isThrownBy(() -> product.addSellableForm(null, 1, Barcode.from("222"), null));
     }
 }

@@ -19,7 +19,7 @@ public class PluCode implements ValueObject {
         this.value = value;
     }
 
-    PluCode of(Integer value) {
+    static PluCode of(Integer value) {
         return new PluCode(value);
     }
 
@@ -32,11 +32,8 @@ public class PluCode implements ValueObject {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof PluCode)) {
-            return false;
-        }
-        PluCode other = (PluCode) obj;
-        return value == other.value;
+        return obj instanceof PluCode other &&
+                value.intValue() == other.value.intValue();
     }
 
     @Override

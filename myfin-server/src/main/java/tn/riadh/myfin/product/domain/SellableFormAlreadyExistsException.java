@@ -8,8 +8,8 @@ public class SellableFormAlreadyExistsException extends DomainException {
         super("SELLABLE_FORM_ALREADY_EXISTS", message);
     }
 
-    public static SellableFormAlreadyExistsException byBarcode(Barcode barcode) {
+    public static SellableFormAlreadyExistsException byBaseUnitQuantity(int baseUnitQuantity) {
         return new SellableFormAlreadyExistsException(
-                "Sellable form with barcode '" + barcode.toString() + "' already exists");
+                "SellableForm with baseUnitQuantity " + baseUnitQuantity + " already exists.");
     }
 }
