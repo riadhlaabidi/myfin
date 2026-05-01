@@ -54,5 +54,35 @@ class ProductServiceTest {
         });
     }
 
-    // TODO: add tests for addSellableForm
+    @Test
+    void shouldAddSellableFormWhenBarcodeIsUnique() {
+        assertThatNoException()
+                .isThrownBy(() -> productService.create("Product", CategoryId.generate(), UnitOfMesure.PIECE,
+                        null, Barcode.from("1111"), null));
+    }
+
+    @Test
+    void shouldAddSellableFormWhenPluCodeIsUnique() {
+        assertThatNoException()
+                .isThrownBy(() -> productService.create("Product", CategoryId.generate(), UnitOfMesure.PIECE,
+                        null, null, PluCode.of(123)));
+    }
+
+    @Test
+    void shouldThrowWhenAddingSellableFormWhenBarcodeAlreadyExists() {
+        checker.withUsedBarcode(Barcode.from("1111"));
+
+        assertThatExceptionOfType(BarcodeAlreadyExistsException.class)
+                .isThrownBy(() -> productService.create("Product", CategoryId.generate(), UnitOfMesure.PIECE,
+                        null, Barcode.from("1111"), null));
+    }
+
+    @Test
+    void shouldThrowWhenAddingSellableFormWhenPluCodeAlreadyExists() {
+        checker.withUsedPluCode(PluCode.of(123));
+
+        assertThatExceptionOfType(PluCodeAlreadyExistsException.class)
+                .isThrownBy(() -> productService.create("Product", CategoryId.generate(), UnitOfMesure.PIECE,
+                        null, null, PluCode.of(123)));
+    }
 }
